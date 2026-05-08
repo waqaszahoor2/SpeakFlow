@@ -582,17 +582,6 @@ class _HeaderChip extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 14),
           const SizedBox(width: 4),
-          appBar: AppBar(
-        title: Text('SpeakFlow', style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.record_voice_over_rounded, color: AppColors.primaryPurple),
-            onPressed: () => TutorSelectorSheet.show(context),
-            tooltip: 'Change AI Tutor',
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
           Text(
             label,
             style: GoogleFonts.poppins(
