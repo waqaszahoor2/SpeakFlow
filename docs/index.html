@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpeakFlow — Download AI English Tutor App</title>
+  <meta name="description" content="Download SpeakFlow — the AI-powered English Learning app. Practice speaking with Gemini AI, get grammar corrections, and track your fluency progress. Free Android APK." />
+  <meta name="keywords" content="SpeakFlow, AI English tutor, English learning app, grammar correction, speaking practice, download APK" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="SpeakFlow — AI English Tutor" />
+  <meta property="og:description" content="Practice spoken English with real AI. Free Android app." />
+  <meta property="og:type" content="website" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #7C3AED;
+      --blue:   #3B82F6;
+      --light:  #F8F7FF;
+      --text:   #1A0533;
+      --muted:  #6B7280;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--light);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      width: 100%;
+      background: linear-gradient(135deg, #7C3AED 0%, #3B82F6 100%);
+      padding: 60px 20px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -100px;
+      width: 350px; height: 350px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+
+    .app-icon {
+      width: 110px; height: 110px;
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      margin-bottom: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+    .hero h1 span { color: #93C5FD; }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.85);
+      max-width: 500px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .badge {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* ── Download buttons ── */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      color: var(--purple);
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 16px 32px;
+      border-radius: 18px;
+      text-decoration: none;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin: 6px;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 50px rgba(0,0,0,0.25);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.35);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 12px 22px;
+      border-radius: 14px;
+      text-decoration: none;
+      transition: background 0.2s;
+      margin: 6px;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── Content ── */
+    .content {
+      width: 100%;
+      max-width: 900px;
+      padding: 48px 20px;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Feature grid ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .feature-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.08);
+      border: 1px solid rgba(124,58,237,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(124,58,237,0.15);
+    }
+    .feature-card .icon { font-size: 2rem; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .feature-card p  { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── Install steps ── */
+    .install-steps {
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.08);
+      margin-bottom: 48px;
+    }
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 34px; height: 34px; min-width: 34px;
+      background: linear-gradient(135deg, #7C3AED, #3B82F6);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 0.85rem;
+    }
+    .step-text h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; }
+    .step-text p  { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── Download variants ── */
+    .download-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 48px;
+    }
+    .download-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.08);
+      border: 1px solid rgba(124,58,237,0.1);
+      text-align: center;
+    }
+    .download-card .tag {
+      display: inline-block;
+      background: linear-gradient(135deg, #7C3AED, #3B82F6);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+    .download-card h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 4px; }
+    .download-card p  { font-size: 0.78rem; color: var(--muted); margin-bottom: 14px; }
+    .download-card a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #7C3AED, #3B82F6);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .download-card a:hover { opacity: 0.85; }
+
+    /* ── Footer ── */
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(124,58,237,0.1);
+    }
+    footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <img src="app_icon.png" alt="SpeakFlow App Icon" class="app-icon"
+         onerror="this.style.display='none'" />
+    <h1>Speak<span>Flow</span></h1>
+    <p>AI-powered English tutor in your pocket. Practice speaking, fix grammar mistakes, and track your fluency — powered by Google Gemini.</p>
+
+    <div class="badge-row">
+      <span class="badge">🤖 Gemini AI</span>
+      <span class="badge">📝 Grammar Correction</span>
+      <span class="badge">📊 Progress Tracking</span>
+      <span class="badge">🆓 Free</span>
+    </div>
+
+    <!-- PRIMARY DOWNLOAD — update YOUR_USERNAME when repo is live -->
+    <a class="btn-primary"
+       href="https://github.com/YOUR_USERNAME/SpeakFlow/releases/latest/download/app-release.apk"
+       download>
+      ⬇️ Download APK — Free
+    </a>
+    <br/>
+    <a class="btn-secondary"
+       href="https://github.com/YOUR_USERNAME/SpeakFlow/releases/latest"
+       target="_blank">
+      📋 All Versions &amp; Release Notes
+    </a>
+    <a class="btn-secondary"
+       href="https://github.com/YOUR_USERNAME/SpeakFlow"
+       target="_blank">
+      ⭐ View on GitHub
+    </a>
+  </section>
+
+  <!-- ── Content ── -->
+  <div class="content">
+
+    <!-- Features -->
+    <h2 class="section-title">✨ Features</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">🤖</div>
+        <h3>AI Conversations</h3>
+        <p>Chat with Google Gemini 1.5 Flash as your personal English tutor, 24/7.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📝</div>
+        <h3>Grammar Correction</h3>
+        <p>Instant grammar fixes with highlighted mistakes and simple rule explanations.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🎤</div>
+        <h3>Voice Practice</h3>
+        <p>Speak with animated waveform feedback and microphone ripple effects.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📊</div>
+        <h3>Progress Dashboard</h3>
+        <p>Weekly speaking score chart, streaks, accuracy stats and achievement badges.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📚</div>
+        <h3>8 Topic Categories</h3>
+        <p>IELTS, Business, Travel, Job Interview, Daily Conversation and more.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🌙</div>
+        <h3>Dark Mode</h3>
+        <p>Beautiful purple/blue gradient theme in both light and dark modes.</p>
+      </div>
+    </div>
+
+    <!-- Download variants -->
+    <h2 class="section-title">📲 Download Options</h2>
+    <div class="download-cards">
+      <div class="download-card">
+        <div class="tag">RECOMMENDED</div>
+        <h4>Universal APK</h4>
+        <p>Works on all Android devices (5.0+)</p>
+        <a href="https://github.com/YOUR_USERNAME/SpeakFlow/releases/latest/download/app-release.apk" download>
+          ⬇️ Download
+        </a>
+      </div>
+      <div class="download-card">
+        <div class="tag">64-BIT</div>
+        <h4>arm64-v8a APK</h4>
+        <p>Optimised for modern devices</p>
+        <a href="https://github.com/YOUR_USERNAME/SpeakFlow/releases/latest/download/app-arm64-v8a-release.apk" download>
+          ⬇️ Download
+        </a>
+      </div>
+      <div class="download-card">
+        <div class="tag">32-BIT</div>
+        <h4>armeabi-v7a APK</h4>
+        <p>For older Android devices</p>
+        <a href="https://github.com/YOUR_USERNAME/SpeakFlow/releases/latest/download/app-armeabi-v7a-release.apk" download>
+          ⬇️ Download
+        </a>
+      </div>
+    </div>
+
+    <!-- Install steps -->
+    <h2 class="section-title">🔧 How to Install</h2>
+    <div class="install-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4>Download the APK</h4>
+          <p>Tap the Download button above on your Android device.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4>Allow Unknown Sources</h4>
+          <p>Go to <strong>Settings → Security → Install unknown apps</strong> and enable your browser or file manager.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4>Open the APK</h4>
+          <p>Tap the downloaded file in your notifications or file manager and tap <strong>Install</strong>.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <h4>Start Speaking!</h4>
+          <p>Open SpeakFlow, complete onboarding and tap <strong>Start Conversation</strong> 🎙️</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center;color:var(--muted);font-size:0.82rem;">
+      ⚙️ Requires Android 5.0 (API 21) or higher &nbsp;·&nbsp; Internet connection for AI features
+    </p>
+
+  </div>
+
+  <footer>
+    <p>Built with ❤️ using Flutter &amp; Google Gemini AI</p>
+    <p style="margin-top:6px;">
+      <a href="https://github.com/YOUR_USERNAME/SpeakFlow">GitHub</a> &nbsp;·&nbsp;
+      <a href="https://github.com/YOUR_USERNAME/SpeakFlow/issues">Report Issue</a> &nbsp;·&nbsp;
+      <a href="https://github.com/YOUR_USERNAME/SpeakFlow/releases">All Releases</a>
+    </p>
+  </footer>
+
+</body>
+</html>
