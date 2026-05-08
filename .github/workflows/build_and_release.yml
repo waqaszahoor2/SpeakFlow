@@ -1,0 +1,67 @@
+name: 🚀 Build & Release APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  JAVA_VERSION: '17'
+  FLUTTER_VERSION: '3.19.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: 🏗️ Build Release APK
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get dependencies
+        run: flutter pub get
+
+      - name: 🧹 Clean Build
+        run: flutter clean
+
+      - name: 🏗️ Build APK (universal)
+        run: flutter build apk --release
+
+      - name: 📋 Get app version
+        id: version
+        run: |
+          VERSION=$(grep 'version:' pubspec.yaml | sed 's/version: //' | sed 's/+.*//' | tr -d ' ')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "App version: $VERSION"
+
+      - name: 📤 Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: SpeakFlow-APKs-v${{ steps.version.outputs.version }}
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: 🚀 Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: SpeakFlow v${{ steps.version.outputs.version }}
+          files: build/app/outputs/flutter-apk/app-release.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
