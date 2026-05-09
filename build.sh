@@ -13,6 +13,14 @@ export PATH="$PATH:`pwd`/flutter/bin"
 echo "Disabling analytics..."
 flutter config --no-analytics
 
+echo "Creating .env file for flutter_dotenv..."
+touch .env
+if [ -n "$GEMINI_API_KEY" ]; then
+  echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
+else
+  echo "GEMINI_API_KEY=" >> .env
+fi
+
 echo "Creating web platform support..."
 flutter create --platforms web .
 
