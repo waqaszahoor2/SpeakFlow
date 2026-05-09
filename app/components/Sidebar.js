@@ -65,6 +65,7 @@ export default function Sidebar() {
           <span>Sign Out</span>
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
