@@ -1,6 +1,7 @@
 {
   "version": 2,
   "buildCommand": "bash build.sh",
+  "installCommand": "echo 'No install step required'",
   "outputDirectory": "build/web",
   "framework": null
 }
