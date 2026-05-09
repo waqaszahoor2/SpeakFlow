@@ -178,9 +178,9 @@ export default function ConversationPage() {
       </div>
 
       {/* Input Bar */}
-      <div className="input-bar" style={{ position:'sticky', bottom:0 }}>
+      <div className="input-bar">
         {isListening && (
-          <div style={{ display:'flex', justifyContent:'center', marginBottom:12 }}>
+          <div style={{ position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: 15 }}>
             <div className="waveform">
               {Array.from({length:8}).map((_,i) => (
                 <div key={i} className="wave-bar" style={{ animationDelay:`${i*0.1}s` }} />
@@ -188,39 +188,34 @@ export default function ConversationPage() {
             </div>
           </div>
         )}
-        <div style={{ display:'flex', gap:10, alignItems:'center', marginBottom:12 }}>
-          <div style={{ flex:1, background:'var(--surface)', borderRadius:20, display:'flex', alignItems:'center', overflow:'hidden' }}>
-            <input ref={inputRef} value={input} onChange={e => setInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
-              placeholder="Type or tap 🎤 to speak…"
-              style={{ flex:1, border:'none', outline:'none', background:'transparent',
-                padding:'12px 16px', fontFamily:'Poppins, sans-serif', fontSize:14, color:'var(--text)' }} />
-          </div>
-          <button onClick={handleSend} style={{ width:44, height:44, borderRadius:14,
-            background:'var(--grad-primary)', border:'none', cursor:'pointer',
-            display:'flex', alignItems:'center', justifyContent:'center',
-            boxShadow:'0 4px 12px var(--shadow-purple)' }}>
-            <svg width="20" height="20" fill="#fff" viewBox="0 0 24 24">
-              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-          </button>
-        </div>
+        
+        <input 
+          ref={inputRef} 
+          className="input-pill"
+          value={input} 
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && !e.shiftKey && handleSend()}
+          placeholder="Type a message..." 
+        />
 
-        {/* Mic button */}
-        <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6,
-          paddingBottom:'max(8px, env(safe-area-inset-bottom))' }}>
-          <button className={`mic-btn${isListening?' listening':''}`} onClick={toggleMic}>
-            {isListening && <><div className="ripple-ring" /><div className="ripple-ring" /><div className="ripple-ring" /></>}
-            <svg width="28" height="28" fill="#fff" viewBox="0 0 24 24" style={{ position:'relative', zIndex:1 }}>
-              {isListening
-                ? <path d="M6 6h12v12H6z"/>
-                : <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1 1.93c-3.94-.49-7-3.85-7-7.93h2c0 3.31 2.69 6 6 6s6-2.69 6-6h2c0 4.08-3.06 7.44-7 7.93V22h-2v-4.07z"/>}
-            </svg>
-          </button>
-          <span style={{ fontSize:11, color: isListening ? 'var(--error)' : 'var(--text-hint)', fontWeight:500 }}>
-            {isListening ? 'Listening… tap to stop' : 'Tap to speak'}
-          </span>
-        </div>
+        <button className="btn-send" onClick={handleSend} title="Send">
+          <svg width="22" height="22" fill="#fff" viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+
+        <button 
+          className={`btn-send mic-btn${isListening ? ' listening' : ''}`} 
+          onClick={toggleMic}
+          title={isListening ? "Stop listening" : "Start speaking"}
+        >
+          {isListening && <><div className="ripple-ring" /><div className="ripple-ring" /></>}
+          <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24" style={{ position:'relative', zIndex:1 }}>
+            {isListening
+              ? <path d="M6 6h12v12H6z"/>
+              : <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1 1.93c-3.94-.49-7-3.85-7-7.93h2c0 3.31 2.69 6 6 6s6-2.69 6-6h2c0 4.08-3.06 7.44-7 7.93V22h-2v-4.07z"/>}
+          </svg>
+        </button>
       </div>
     </div>
   );

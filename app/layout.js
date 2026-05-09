@@ -14,6 +14,8 @@ export const viewport = {
   themeColor: '#7C3AED',
 };
 
+import Sidebar from './components/Sidebar';
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -22,6 +24,7 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body>
+        <Sidebar />
         <div id="app-root">
           {children}
         </div>
