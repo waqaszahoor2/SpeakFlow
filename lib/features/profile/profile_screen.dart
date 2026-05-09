@@ -330,7 +330,9 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _buildSignOutBtn(BuildContext context) => GestureDetector(
-    onTap: () => context.go('/onboarding'),
+    onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Sign out not implemented')),
+    ),
     child: Container(
       width: double.infinity,
       height: 54,
