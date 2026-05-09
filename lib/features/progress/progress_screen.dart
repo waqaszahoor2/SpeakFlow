@@ -171,7 +171,7 @@ class ProgressScreen extends StatelessWidget {
               maxY: 100,
               barTouchData: BarTouchData(
                 touchTooltipData: BarTouchTooltipData(
-                  tooltipBgColor: AppColors.primaryPurple,
+                  getTooltipColor: (group) => AppColors.primaryPurple,
                   getTooltipItem: (group, groupIndex, rod, rodIndex) =>
                     BarTooltipItem(
                       '${rod.toY.round()}%',

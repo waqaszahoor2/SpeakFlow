@@ -97,7 +97,6 @@ class UpdateDialog extends ConsumerWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                gradient: AppColors.primaryGradient.withOpacity(0.08) as LinearGradient?,
                 color: isDark ? AppColors.backgroundCardDark : AppColors.primaryPurple.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.primaryPurple.withOpacity(0.15)),
