@@ -35,6 +35,29 @@ class SpeakFlowApp extends ConsumerWidget {
       darkTheme: AppTheme.darkTheme,
       themeMode: themeMode,
       routerConfig: appRouter,
+      builder: (context, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Scaffold(
+          backgroundColor: isDark ? Colors.black : Colors.grey[200],
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: ClipRect(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return MediaQuery(
+                      data: MediaQuery.of(context).copyWith(
+                        size: Size(constraints.maxWidth, MediaQuery.of(context).size.height),
+                      ),
+                      child: child!,
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
