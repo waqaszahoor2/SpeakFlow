@@ -1,38 +1,51 @@
 #!/bin/bash
-# Vercel build script for Flutter Web
+set -e  # Exit immediately on any error
 
+echo "=============================="
+echo " SpeakFlow — Vercel Build"
+echo "=============================="
+
+# ── 1. Clone Flutter SDK (stable channel) ─────────────────────────
 if [ ! -d "flutter" ]; then
-  echo "Cloning Flutter SDK..."
-  git clone https://github.com/flutter/flutter.git -b stable
+  echo "[1/7] Cloning Flutter SDK (stable)..."
+  git clone https://github.com/flutter/flutter.git --depth=1 -b stable --quiet
 else
-  echo "Flutter SDK already cloned. Skipping..."
+  echo "[1/7] Flutter SDK already present, pulling latest..."
+  cd flutter && git pull --quiet && cd ..
 fi
 
-export PATH="$PATH:`pwd`/flutter/bin"
+export PATH="$PATH:$(pwd)/flutter/bin"
 
-echo "Disabling analytics..."
+# ── 2. Verify Flutter ─────────────────────────────────────────────
+echo "[2/7] Verifying Flutter installation..."
+flutter --version
 flutter config --no-analytics
-
-echo "Creating .env file for flutter_dotenv..."
-touch .env
-if [ -n "$GEMINI_API_KEY" ]; then
-  echo "GEMINI_API_KEY=$GEMINI_API_KEY" >> .env
-else
-  echo "GEMINI_API_KEY=" >> .env
-fi
-
-echo "Enabling web support..."
 flutter config --enable-web
 
-echo "Creating web platform support..."
-flutter create --platforms web .
+# ── 3. Generate .env file ─────────────────────────────────────────
+echo "[3/7] Writing .env file..."
+cat > .env <<EOF
+GEMINI_API_KEY=${GEMINI_API_KEY:-}
+EOF
+echo ".env file written."
 
-echo "Cleaning previous builds..."
-flutter clean
+# ── 4. Ensure web platform files exist ──────────────────────────
+echo "[4/7] Ensuring web platform support..."
+if [ ! -d "web" ]; then
+  echo "  web/ directory missing — running flutter create --platforms web"
+  flutter create --platforms web . --quiet
+else
+  echo "  web/ directory already exists. Skipping."
+fi
 
-echo "Getting dependencies..."
+# ── 5. Get dependencies ───────────────────────────────────────────
+echo "[5/7] Getting dependencies..."
 flutter pub get
 
-echo "Building Flutter Web app..."
-flutter build web --release --web-renderer canvaskit
+# ── 6. Build for web (release) ───────────────────────────────────
+echo "[6/7] Building Flutter Web (release)..."
+flutter build web --release
 
+# ── 7. Done ───────────────────────────────────────────────────────
+echo "[7/7] Build complete! Output is in build/web/"
+ls -lh build/web/
