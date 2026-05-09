@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSidebar } from '../context/SidebarContext';
 
 const NAV = [
   { path: '/home', label: 'Home', icon: (a) => (
@@ -19,21 +20,27 @@ const NAV = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { isOpen, close } = useSidebar();
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-logo">SpeakFlow</div>
-      <nav className="sidebar-nav">
-        {NAV.map(({ path, label, icon }) => {
-          const active = pathname === path || (pathname === '/' && path === '/home');
-          return (
-            <Link key={path} href={path} className={`sidebar-item${active ? ' active' : ''}`}>
-              {icon(active)}
-              <span>{label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+    <>
+      {isOpen && <div className="sidebar-overlay" onClick={close} />}
+      <aside className={`sidebar${isOpen ? ' open' : ''}`}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:40 }}>
+          <div className="sidebar-logo" style={{ marginBottom:0 }}>SpeakFlow</div>
+          <button className="sidebar-close" onClick={close}>×</button>
+        </div>
+        <nav className="sidebar-nav">
+          {NAV.map(({ path, label, icon }) => {
+            const active = pathname === path || (pathname === '/' && path === '/home');
+            return (
+              <Link key={path} href={path} className={`sidebar-item${active ? ' active' : ''}`} onClick={close}>
+                {icon(active)}
+                <span>{label}</span>
+              </Link>
+            );
+          })}
+        </nav>
       
       <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div style={{ padding: '20px', background: 'rgba(255,255,255,0.05)', borderRadius: '16px' }}>
