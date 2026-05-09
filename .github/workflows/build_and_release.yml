@@ -38,8 +38,14 @@ jobs:
       - name: 🧹 Clean Build
         run: flutter clean
 
-      - name: 🏗️ Build APK (universal)
+      - name: 🏗️ Build Debug APK
+        run: flutter build apk --debug
+
+      - name: 🏗️ Build Release APK (universal)
         run: flutter build apk --release
+
+      - name: 🏗️ Build Release Bundle (AAB)
+        run: flutter build appbundle --release
 
       - name: 📋 Get app version
         id: version
@@ -48,18 +54,23 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "App version: $VERSION"
 
-      - name: 📤 Upload APK artifacts
+      - name: 📤 Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: SpeakFlow-APKs-v${{ steps.version.outputs.version }}
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: SpeakFlow-Builds-v${{ steps.version.outputs.version }}
+          path: |
+            build/app/outputs/flutter-apk/*.apk
+            build/app/outputs/bundle/release/*.aab
 
       - name: 🚀 Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: SpeakFlow v${{ steps.version.outputs.version }}
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/flutter-apk/app-debug.apk
+            build/app/outputs/bundle/release/app-release.aab
           draft: false
           prerelease: false
         env:
