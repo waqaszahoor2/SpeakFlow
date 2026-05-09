@@ -21,11 +21,18 @@ else
   echo "GEMINI_API_KEY=" >> .env
 fi
 
+echo "Enabling web support..."
+flutter config --enable-web
+
 echo "Creating web platform support..."
 flutter create --platforms web .
+
+echo "Cleaning previous builds..."
+flutter clean
 
 echo "Getting dependencies..."
 flutter pub get
 
 echo "Building Flutter Web app..."
-flutter build web --release
+flutter build web --release --web-renderer canvaskit
+
