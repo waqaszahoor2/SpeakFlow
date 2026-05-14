@@ -1,9 +1,22 @@
 'use client';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import BottomNav from './components/BottomNav';
 
 export default function RootPage() {
   const router = useRouter();
-  if (typeof window !== 'undefined') router.replace('/home');
-  return null;
+  useEffect(() => {
+    const raw = localStorage.getItem('sf_profile');
+    if (raw) {
+      try {
+        const p = JSON.parse(raw);
+        if (p.setupDone) { router.replace('/home'); return; }
+      } catch {}
+    }
+    router.replace('/onboarding');
+  }, []);
+  return (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'#0f0e1a' }}>
+      <div style={{ fontSize:48, animation:'pulse 1.5s ease infinite' }}>🤖</div>
+    </div>
+  );
 }

@@ -34,3 +34,32 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## 📱 Android App (Capacitor)
+
+This project has been configured with Capacitor to be wrapped as a native Android APK.
+
+### Prerequisites
+- **Android Studio** installed (latest version recommended)
+- **JDK 17** (Java Development Kit)
+- **Android SDK** (Configured via Android Studio)
+
+### Development & Live Reload
+During development, the Android app is configured in `capacitor.config.ts` to live-reload from your Vercel deployment URL.
+1. Run `npm run android` to open Android Studio.
+2. Hit the "Run" (Play) button in Android Studio to launch the app on an emulator or plugged-in device.
+
+### Generating a Signed Release APK (Production)
+Before building for production, you must remove the `server` block from `capacitor.config.ts` so the app loads the bundled static files offline instead of hitting the Vercel URL.
+1. Comment out or delete the `server` block in `capacitor.config.ts`.
+2. Run the automated build script:
+   ```bash
+   npm run android:build
+   ```
+3. This script will:
+   - Build the Next.js static export (`npm run build`)
+   - Sync the web assets to the Android project (`npx cap sync`)
+   - Run Gradle to assemble the Release APK (`./gradlew assembleRelease`)
+4. To sign the generated APK (located at `android/app/build/outputs/apk/release/app-release-unsigned.apk`), you can either:
+   - Open Android Studio (`npx cap open android`), go to **Build > Generate Signed Bundle / APK** and follow the GUI wizard.
+   - Or configure your `build.gradle` with a keystore for automated signing.

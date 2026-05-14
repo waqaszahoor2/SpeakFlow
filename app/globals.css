@@ -616,11 +616,7 @@ html, body {
 
 /* ── Input bar (chat) ── */
 .input-bar {
-  position: fixed; 
-  bottom: var(--nav-h); 
-  left: 50%; 
-  transform: translateX(-50%);
-  width: 92%; 
+  width: 100%; 
   max-width: 430px;
   background: var(--card); 
   border-radius: 24px;
@@ -635,8 +631,6 @@ html, body {
 @media (min-width: 768px) {
   .input-bar {
     max-width: 800px;
-    bottom: 30px;
-    left: calc(var(--sidebar-w) + (100% - var(--sidebar-w)) / 2);
     padding: 16px 20px;
   }
 }
@@ -666,6 +660,14 @@ html, body {
 
 .btn-send:active { transform: scale(0.95); }
 
+/* ── Mic button ripple rings ── */
+.ripple-ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  animation: ripple 1.2s ease-out infinite;
+  pointer-events: none;
+}
+
 /* ── Difficulty badge ── */
 .badge { padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: 600; }
 .badge-beginner     { background: rgba(16,185,129,0.12); color: #059669; }
@@ -677,4 +679,9 @@ html, body {
   background: var(--card); border-radius: 22px; padding: 18px;
   box-shadow: 0 4px 16px var(--shadow);
   display: flex; align-items: center; gap: 14px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
