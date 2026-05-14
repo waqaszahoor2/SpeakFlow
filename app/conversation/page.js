@@ -6,10 +6,10 @@ import { saveCorrection, buildMistakeContext, xpToLevel, nextLevelXp, loadPatter
 let msgId = 0;
 
 const MODELS = [
-  { id:'moonshot-v1-8k',   label:'Kimi 8K',   emoji:'🌙', sub:'Built-in ✅' },
-  { id:'moonshot-v1-32k',  label:'Kimi 32K',  emoji:'🌙', sub:'Built-in ✅' },
-  { id:'gemini-1.5-flash', label:'Gemini Flash', emoji:'✨', sub:'Your key' },
-  { id:'gemini-1.5-pro',   label:'Gemini Pro',   emoji:'✨', sub:'Your key' },
+  { id:'moonshot-v1-8k',   label:'Kimi 8K',   emoji:'🌙' },
+  { id:'moonshot-v1-32k',  label:'Kimi 32K',  emoji:'🌙' },
+  { id:'gemini-1.5-flash', label:'Gemini Flash', emoji:'✨' },
+  { id:'gemini-1.5-pro',   label:'Gemini Pro',   emoji:'✨' },
 ];
 
 const ART_STYLES = [
@@ -111,7 +111,6 @@ export default function ConversationPage() {
   const [corrections, setCorrections] = useState([]);
   const [profile, setProfile] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [keyInput, setKeyInput] = useState('');
   const [localModel, setLocalModel] = useState('moonshot-v1-8k');
   const [levelUp, setLevelUp] = useState(null);
   const [assessmentCount, setAssessmentCount] = useState(0);
@@ -126,7 +125,7 @@ export default function ConversationPage() {
     const raw = localStorage.getItem('sf_profile');
     let p = null;
     if (raw) {
-      try { p = JSON.parse(raw); setProfile(p); profileRef.current = p; setLocalModel(p.selectedModel || 'moonshot-v1-8k'); setKeyInput(p.geminiKey || ''); } catch {}
+      try { p = JSON.parse(raw); setProfile(p); profileRef.current = p; setLocalModel(p.selectedModel || 'moonshot-v1-8k'); } catch {}
     }
     const intro = p?.englishLevel === 'Beginner'
       ? "Hello! I'm your SpeakFlow AI tutor. Let's start easy — please tell me your name and where you are from."
@@ -181,7 +180,6 @@ export default function ConversationPage() {
         body: JSON.stringify({
           message: text, history,
           model: localModel || p?.selectedModel || 'moonshot-v1-8k',
-          clientGeminiKey: keyInput || p?.geminiKey || '',
           level: p?.englishLevel || 'Beginner',
           goals,
           nativeLanguage: p?.nativeLanguage || '',
@@ -253,7 +251,7 @@ export default function ConversationPage() {
     if (raw) {
       try {
         const p2 = JSON.parse(raw);
-        const updated = { ...p2, geminiKey: keyInput.trim(), selectedModel: localModel };
+        const updated = { ...p2, selectedModel: localModel };
         localStorage.setItem('sf_profile', JSON.stringify(updated));
         setProfile(updated); profileRef.current = updated;
       } catch {}
@@ -327,20 +325,12 @@ export default function ConversationPage() {
             {/* Model picker */}
             <div style={{ display:'flex', gap:6, overflowX:'auto', paddingBottom:4, marginBottom:12 }}>
               {MODELS.map(m => (
-                <button key={m.id} onClick={() => setLocalModel(m.id)}
+                <button key={m.id} onClick={() => { setLocalModel(m.id); saveSettings(); }}
                   style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2, padding:'8px 10px', borderRadius:12, border:`2px solid ${localModel===m.id?'var(--purple)':'var(--surface)'}`, background: localModel===m.id?'rgba(124,58,237,0.1)':'var(--card)', cursor:'pointer', fontFamily:'Poppins,sans-serif', flexShrink:0 }}>
                   <span style={{ fontSize:15 }}>{m.emoji}</span>
                   <span style={{ fontSize:10, fontWeight:700, color:localModel===m.id?'var(--purple)':'var(--text-sec)', whiteSpace:'nowrap' }}>{m.label}</span>
-                  <span style={{ fontSize:9, color:'var(--text-hint)' }}>{m.sub}</span>
                 </button>
               ))}
-            </div>
-            {/* API key */}
-            <div style={{ display:'flex', gap:8, marginBottom:8 }}>
-              <input type="password" value={keyInput} onChange={e => setKeyInput(e.target.value)}
-                placeholder="Gemini key (optional — Kimi works without one)"
-                style={{ flex:1, padding:'10px 13px', borderRadius:12, border:'1.5px solid var(--surface)', background:'var(--card)', fontFamily:'Poppins,sans-serif', fontSize:12, color:'var(--text)', outline:'none' }} />
-              <button onClick={saveSettings} style={{ padding:'10px 16px', borderRadius:12, border:'none', background:'var(--grad-primary)', color:'#fff', fontFamily:'Poppins,sans-serif', fontSize:12, fontWeight:700, cursor:'pointer', flexShrink:0 }}>Save</button>
             </div>
             {patterns.length > 0 && (
               <div style={{ background:'rgba(239,68,68,0.05)', border:'1px solid rgba(239,68,68,0.15)', borderRadius:12, padding:'10px 12px' }}>

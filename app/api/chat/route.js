@@ -114,8 +114,8 @@ Remember: You adapt. The student's level may grow — if they consistently answe
    KIMI (OpenAI-compatible) CALL
 ────────────────────────────────────────────── */
 async function callKimi(model, messages) {
-  // Use environment variable first, then fallback to the provided key so Vercel deploys instantly work
-  const key = process.env.KIMI_API_KEY || 'sk-HCvCBY2f61gD4YRaAy6oKt9F2vPa3qI1z6eGiRj4uD6mJ80I';
+  // Use securely configured environment variables
+  const key = process.env.KIMI_API_KEY;
   if (!key) throw new Error('Kimi API key not configured on server.');
   const res = await fetch('https://api.moonshot.cn/v1/chat/completions', {
     method: 'POST',
@@ -137,7 +137,6 @@ export async function POST(req) {
       message,
       history,
       model = 'moonshot-v1-8k',
-      clientGeminiKey,
       // Adaptive context from client
       level = 'Beginner',
       goals = [],
@@ -179,11 +178,11 @@ export async function POST(req) {
     }
 
     /* ── GEMINI BRANCH ── */
-    // Use client key, then server env variable, then provided fallback
-    const apiKey = clientGeminiKey?.trim() || process.env.GEMINI_API_KEY || 'AIzaSyB7IxsBKovopAxiaUb8KblE_w24U6CLJDM';
+    // Exclusively use the securely configured server env variable
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey || apiKey === 'your_actual_api_key_here') {
       return Response.json({
-        text: "⚠️ No Gemini API key. Tap ⚙️ in the header and enter your key from [aistudio.google.com](https://aistudio.google.com), or switch to a Kimi model (no key needed).",
+        text: "⚠️ SpeakFlow is experiencing configuration issues. Please contact the administrator.",
         correction: null, isAssessment: false,
       });
     }
