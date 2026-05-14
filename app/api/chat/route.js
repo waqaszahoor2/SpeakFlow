@@ -122,7 +122,9 @@ async function callKimi(model, messages) {
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
     body: JSON.stringify({ model, messages, temperature: 0.85, max_tokens: 600 }),
   });
-  if (!res.ok) throw new Error(`Kimi API error ${res.status}: ${await res.text()}`);
+    if (res.status === 401) throw new Error('Kimi API key is invalid, revoked, or expired. Please generate a new key.');
+    throw new Error(`Kimi API error ${res.status}: ${await res.text()}`);
+  }
   return (await res.json()).choices?.[0]?.message?.content ?? '';
 }
 
@@ -177,7 +179,8 @@ export async function POST(req) {
     }
 
     /* ── GEMINI BRANCH ── */
-    const apiKey = clientGeminiKey?.trim() || process.env.GEMINI_API_KEY || '';
+    // Use client key, then server env variable, then provided fallback
+    const apiKey = clientGeminiKey?.trim() || process.env.GEMINI_API_KEY || 'AIzaSyB7IxsBKovopAxiaUb8KblE_w24U6CLJDM';
     if (!apiKey || apiKey === 'your_actual_api_key_here') {
       return Response.json({
         text: "⚠️ No Gemini API key. Tap ⚙️ in the header and enter your key from [aistudio.google.com](https://aistudio.google.com), or switch to a Kimi model (no key needed).",
@@ -202,11 +205,11 @@ export async function POST(req) {
 
   } catch (err) {
     const msg = err.message || '';
-    if (msg.includes('API_KEY_INVALID') || msg.includes('401')) {
-      return Response.json({ text: "⚠️ Invalid API key. Update it in the settings panel (⚙️).", correction: null }, { status: 401 });
+    if (msg.includes('API_KEY_INVALID') || msg.includes('401') || msg.includes('404')) {
+      return Response.json({ text: "⚠️ The Gemini API key is invalid, expired, or doesn't have access to this model. Please generate a new key at aistudio.google.com and update it in the settings panel (⚙️).", correction: null }, { status: 401 });
     }
     if (msg.includes('quota') || msg.includes('429')) {
-      return Response.json({ text: "⚠️ API quota exceeded. Try again later or switch to Kimi model.", correction: null }, { status: 429 });
+      return Response.json({ text: "⚠️ API quota exceeded. Please check your API provider billing or try again later.", correction: null }, { status: 429 });
     }
     return Response.json({ text: `⚠️ Error: ${msg}`, correction: null }, { status: 500 });
   }
