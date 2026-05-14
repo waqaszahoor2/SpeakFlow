@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "deploy": "vercel --prod",
     "android": "npx cap run android",
     "android:build": "npm run build && npx cap sync && cd android && ./gradlew assembleRelease"
   },
