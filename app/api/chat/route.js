@@ -122,6 +122,7 @@ async function callKimi(model, messages) {
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
     body: JSON.stringify({ model, messages, temperature: 0.85, max_tokens: 600 }),
   });
+  if (!res.ok) {
     if (res.status === 401) throw new Error('Kimi API key is invalid, revoked, or expired. Please generate a new key.');
     throw new Error(`Kimi API error ${res.status}: ${await res.text()}`);
   }
