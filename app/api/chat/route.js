@@ -194,11 +194,18 @@ export async function POST(req) {
       systemInstruction: systemPrompt,
       generationConfig: { temperature: 0.85, maxOutputTokens: 600 },
     });
+    let geminiHistory = (history || []).map(m => ({
+      role: m.role === 'user' ? 'user' : 'model',
+      parts: [{ text: m.text }],
+    }));
+
+    // Gemini strictly requires the first history message to be from 'user'
+    if (geminiHistory.length > 0 && geminiHistory[0].role === 'model') {
+      geminiHistory.unshift({ role: 'user', parts: [{ text: 'Hi! Let us begin our lesson.' }] });
+    }
+
     const chat = geminiModel.startChat({
-      history: (history || []).map(m => ({
-        role: m.role === 'user' ? 'user' : 'model',
-        parts: [{ text: m.text }],
-      })),
+      history: geminiHistory,
     });
     const result = await chat.sendMessage(message);
     return Response.json(parseResponse(result.response.text()));
