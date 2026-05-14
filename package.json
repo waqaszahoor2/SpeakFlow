@@ -9,7 +9,7 @@
     "lint": "eslint",
     "deploy": "vercel --prod",
     "android": "npx cap run android",
-    "android:build": "npm run build && npx cap sync && cd android && ./gradlew assembleRelease"
+    "android:build": "cross-env CAPACITOR_BUILD=1 next build && npx cap sync && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@capacitor-community/text-to-speech": "^8.0.0",
@@ -26,6 +26,7 @@
   "devDependencies": {
     "@capacitor/cli": "^8.3.4",
     "@tailwindcss/postcss": "^4",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4"

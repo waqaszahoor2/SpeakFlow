@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // Only use static export when building for Android, let Vercel use default (serverless)
+  ...(process.env.CAPACITOR_BUILD === '1' ? { output: 'export' } : {}),
   images: {
     unoptimized: true,
   },
