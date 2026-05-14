@@ -114,7 +114,8 @@ Remember: You adapt. The student's level may grow — if they consistently answe
    KIMI (OpenAI-compatible) CALL
 ────────────────────────────────────────────── */
 async function callKimi(model, messages) {
-  const key = process.env.KIMI_API_KEY;
+  // Use environment variable first, then fallback to the provided key so Vercel deploys instantly work
+  const key = process.env.KIMI_API_KEY || 'sk-HCvCBY2f61gD4YRaAy6oKt9F2vPa3qI1z6eGiRj4uD6mJ80I';
   if (!key) throw new Error('Kimi API key not configured on server.');
   const res = await fetch('https://api.moonshot.cn/v1/chat/completions', {
     method: 'POST',
