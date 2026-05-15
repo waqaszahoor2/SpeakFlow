@@ -5,10 +5,7 @@ import { saveCorrection, buildMistakeContext, xpToLevel, nextLevelXp, loadPatter
 
 let msgId = 0;
 
-const MODELS = [
-  { id:'gemini-2.5-flash', label:'Gemini Flash', emoji:'✨' },
-  { id:'gemini-2.5-pro',   label:'Gemini Pro',   emoji:'✨' },
-];
+
 
 const ART_STYLES = [
   { id:'realistic',   label:'Realistic',    emoji:'📸', suffix:'photorealistic, ultra-detailed, 8k photography' },
@@ -159,7 +156,6 @@ export default function ConversationPage() {
         p = JSON.parse(raw); 
         setProfile(p); 
         profileRef.current = p; 
-        setLocalModel(MODELS.some(m => m.id === p.selectedModel) ? p.selectedModel : 'gemini-2.5-flash');
         if (p.selectedVoiceURI) {
           setSelectedVoiceURI(p.selectedVoiceURI);
           voiceURIRef.current = p.selectedVoiceURI;

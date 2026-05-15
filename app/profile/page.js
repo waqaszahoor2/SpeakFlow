@@ -7,13 +7,11 @@ const LEVELS = ['Beginner', 'Elementary', 'Intermediate', 'Upper-Intermediate', 
 const LANGUAGES = ['Urdu', 'Hindi', 'Arabic', 'Chinese', 'Spanish', 'French', 'Portuguese', 'Turkish', 'Other'];
 const GOALS = ['Get a job abroad','Pass IELTS/TOEFL','Travel confidently','Daily conversation','Business English','Improve overall'];
 
-const MODELS = [
-  { id:'gemini-2.5-flash', label:'Gemini Flash', sub:'Powered by Google AI', emoji:'✨' },
-];
+
 
 const DEFAULT = {
   name:'', age:'', nativeLanguage:'', englishLevel:'Beginner', studyGoal:'', studyGoals:[],
-  selectedModel:'gemini-2.5-flash', xp:0, streak:0, setupDone:true,
+  xp:0, streak:0, setupDone:true,
   checkedDays:[], todayMin:0, dailyGoalMin:null,
 };
 

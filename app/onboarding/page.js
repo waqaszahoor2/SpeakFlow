@@ -65,7 +65,6 @@ export default function OnboardingPage() {
       studyGoals: form.studyGoals,
       studyGoal: form.studyGoals[0] || '',
       geminiKey: '',
-      selectedModel: 'gemini-2.5-flash',
       checkedDays: [],
       todayMin: 0,
       xp: 0,
