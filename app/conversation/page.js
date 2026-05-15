@@ -113,22 +113,67 @@ export default function ConversationPage() {
   const [levelUp, setLevelUp] = useState(null);
   const [assessmentCount, setAssessmentCount] = useState(0);
   const [imageStyle, setImageStyle] = useState('realistic');
+  const [voiceOnlyMode, setVoiceOnlyMode] = useState(false);
+  const [availableVoices, setAvailableVoices] = useState([]);
+  const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
+  const voiceURIRef = useRef('');
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
   const recognitionRef = useRef(null);
   const sessionStart = useRef(null);
   const profileRef = useRef(null);
 
+  useEffect(() => { voiceURIRef.current = selectedVoiceURI; }, [selectedVoiceURI]);
+
+  const speakText = (text) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.95;
+    if (voiceURIRef.current) {
+      const voice = window.speechSynthesis.getVoices().find(v => v.voiceURI === voiceURIRef.current);
+      if (voice) u.voice = voice;
+    }
+    window.speechSynthesis.speak(u);
+  };
+
   useEffect(() => {
+    const loadVoices = () => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        const enVoices = voices.filter(v => v.lang.startsWith('en'));
+        setAvailableVoices(enVoices);
+      }
+    };
+    loadVoices();
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
     const raw = localStorage.getItem('sf_profile');
-    let p = null;
     if (raw) {
-      try { p = JSON.parse(raw); setProfile(p); profileRef.current = p; setLocalModel(MODELS.some(m => m.id === p.selectedModel) ? p.selectedModel : 'gemini-2.5-flash'); } catch {}
+      try { 
+        p = JSON.parse(raw); 
+        setProfile(p); 
+        profileRef.current = p; 
+        setLocalModel(MODELS.some(m => m.id === p.selectedModel) ? p.selectedModel : 'gemini-2.5-flash');
+        if (p.selectedVoiceURI) {
+          setSelectedVoiceURI(p.selectedVoiceURI);
+          voiceURIRef.current = p.selectedVoiceURI;
+        }
+      } catch {}
     }
     const intro = p?.englishLevel === 'Beginner'
       ? "Hello! I'm your SpeakFlow AI tutor. Let's start easy — please tell me your name and where you are from."
       : "Hello! I'm your SpeakFlow AI tutor. Let's begin with a quick warm-up. Can you describe what you did yesterday in 2–3 sentences?";
     sendMessage(intro, true, p);
+    
+    // Play intro voice after a short delay (requires user interaction first typically, but we try anyway)
+    setTimeout(() => {
+      speakText(intro);
+    }, 1000);
     sessionStart.current = Date.now();
     if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -169,6 +214,11 @@ export default function ConversationPage() {
       setHistory(h => [...h, { role: 'user', text }]);
     }
     setIsTyping(true);
+    
+    // Stop any current voice playback
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
     try {
       const mistakeCtx = buildMistakeContext(4);
       const goals = p?.studyGoals || (p?.studyGoal ? [p.studyGoal] : []);
@@ -204,6 +254,9 @@ export default function ConversationPage() {
       const aiMsg = { id: ++msgId, role: 'ai', text: data.text, correction: data.correction, isAssessment: data.isAssessment, imageUrl, imagePrompt: data.imagePrompt, imageStyleLabel: imageStyle };
       setMessages(m => [...m, aiMsg]);
       setHistory(h => [...h, { role: 'ai', text: data.text }]);
+      
+      // Auto-play voice response
+      speakText(data.text);
       if (data.isAssessment) setAssessmentCount(c => c + 1);
       if (data.correction) {
         saveCorrection(data.correction);
@@ -267,7 +320,7 @@ export default function ConversationPage() {
 
       {/* Level-up toast */}
       {levelUp && (
-        <div style={{ position:'fixed', top:16, left:'50%', transform:'translateX(-50%)', zIndex:2000, background:'linear-gradient(135deg,#7C3AED,#EC4899)', borderRadius:20, padding:'12px 24px', color:'#fff', fontWeight:700, fontSize:14, boxShadow:'0 8px 32px rgba(124,58,237,0.5)', display:'flex', alignItems:'center', gap:10, animation:'fadeSlideUp 0.4s ease' }}>
+        <div style={{ position:'fixed', top:16, left:'50%', transform:'translateX(-50%)', zIndex:2000, background:'var(--grad-primary)', borderRadius:20, padding:'12px 24px', color:'#fff', fontWeight:700, fontSize:14, boxShadow:'0 8px 32px var(--shadow-purple)', display:'flex', alignItems:'center', gap:10, animation:'fadeSlideUp 0.4s ease' }}>
           🎉 Level Up! You are now <strong>{levelUp}</strong>!
           <button onClick={() => setLevelUp(null)} style={{ background:'rgba(255,255,255,0.2)', border:'none', borderRadius:'50%', width:24, height:24, color:'#fff', cursor:'pointer', fontSize:14 }}>×</button>
         </div>
@@ -290,8 +343,8 @@ export default function ConversationPage() {
           <button onClick={() => router.push('/home')} style={{ width:36, height:36, borderRadius:'50%', background:'var(--surface)', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
             <svg width="15" height="15" fill="none" stroke="var(--text)" strokeWidth="2.5" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
           </button>
-          <div style={{ width:38, height:38, borderRadius:'50%', background:'linear-gradient(135deg,#7C3AED,#EC4899)', padding:2, boxShadow:'0 4px 12px var(--shadow-purple)', flexShrink:0 }}>
-            <div style={{ width:'100%', height:'100%', borderRadius:'50%', overflow:'hidden', background:'#1a0a3d', display:'flex', alignItems:'center', justifyContent:'center' }}>
+          <div style={{ width:38, height:38, borderRadius:'50%', background:'var(--grad-primary)', padding:2, boxShadow:'0 4px 12px var(--shadow-purple)', flexShrink:0 }}>
+            <div style={{ width:'100%', height:'100%', borderRadius:'50%', overflow:'hidden', background:'var(--card)', display:'flex', alignItems:'center', justifyContent:'center' }}>
               <img src="/logo.png" alt="SF" style={{ width:28, height:28, objectFit:'contain' }} />
             </div>
           </div>
@@ -308,6 +361,9 @@ export default function ConversationPage() {
               <span style={{ fontSize:11, fontWeight:700, color:'#DC2626' }}>{corrections.length}</span>
             </button>
           )}
+          <button onClick={() => setVoiceOnlyMode(v => !v)} style={{ padding:'5px 10px', borderRadius:12, background: voiceOnlyMode ? 'var(--grad-primary)' : 'var(--surface)', color: voiceOnlyMode ? '#fff' : 'var(--text)', border:'none', cursor:'pointer', display:'flex', alignItems:'center', gap:4, fontWeight:700, fontSize:11 }}>
+            {voiceOnlyMode ? '🔊 Voice Only' : '💬 Text + Voice'}
+          </button>
           <button onClick={() => setShowSettings(s => !s)} style={{ width:36, height:36, borderRadius:'50%', background: showSettings ? 'var(--grad-primary)' : 'var(--surface)', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
             <svg width="16" height="16" fill="none" stroke={showSettings?'#fff':'var(--text)'} strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           </button>
@@ -320,6 +376,32 @@ export default function ConversationPage() {
         {showSettings && (
           <div style={{ borderTop:'1px solid var(--surface)', padding:'14px 16px', background:'var(--bg)' }} className="fade-up">
             <div style={{ fontSize:11, fontWeight:700, color:'var(--text-sec)', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:10 }}>Session Settings</div>
+
+            {/* Voice Picker */}
+            {availableVoices.length > 0 && (
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize:11, fontWeight:600, color:'var(--text-hint)', marginBottom:8 }}>🗣️ Voice Assistant</div>
+                <select 
+                  value={selectedVoiceURI} 
+                  onChange={(e) => { 
+                    const v = e.target.value;
+                    setSelectedVoiceURI(v); 
+                    voiceURIRef.current = v;
+                    if (profileRef.current) {
+                      const updated = { ...profileRef.current, selectedVoiceURI: v };
+                      localStorage.setItem('sf_profile', JSON.stringify(updated));
+                      setProfile(updated); profileRef.current = updated;
+                    }
+                  }}
+                  style={{ width:'100%', padding:'8px 12px', borderRadius:12, border:'1px solid var(--surface)', background:'var(--card)', color:'var(--text)', outline:'none', fontFamily:'Inter,sans-serif', fontSize:13 }}
+                >
+                  <option value="">Default OS Voice</option>
+                  {availableVoices.map(v => (
+                    <option key={v.voiceURI} value={v.voiceURI}>{v.name}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {patterns.length > 0 && (
               <div style={{ background:'rgba(239,68,68,0.05)', border:'1px solid rgba(239,68,68,0.15)', borderRadius:12, padding:'10px 12px' }}>
@@ -352,8 +434,8 @@ export default function ConversationPage() {
       <div style={{ flex:1, overflowY:'auto', padding:'12px 16px 8px', display:'flex', flexDirection:'column', gap:12 }}>
         {messages.length === 0 && !isTyping && (
           <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:14, color:'var(--text-sec)', minHeight:160 }}>
-            <div style={{ width:72, height:72, borderRadius:'50%', background:'linear-gradient(135deg,#7C3AED,#EC4899)', padding:3, boxShadow:'0 8px 28px rgba(124,58,237,0.4)', animation:'pulse 2s ease infinite' }}>
-              <div style={{ width:'100%', height:'100%', borderRadius:'50%', overflow:'hidden', background:'#1a0a3d', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <div style={{ width:72, height:72, borderRadius:'50%', background:'var(--grad-primary)', padding:3, boxShadow:'0 8px 28px var(--shadow-purple)', animation:'pulse 2s ease infinite' }}>
+              <div style={{ width:'100%', height:'100%', borderRadius:'50%', overflow:'hidden', background:'var(--card)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                 <img src="/logo.png" alt="SpeakFlow" style={{ width:52, height:52, objectFit:'contain' }} />
               </div>
             </div>
@@ -372,18 +454,25 @@ export default function ConversationPage() {
             )}
             <div style={{ display:'flex', alignItems:'flex-end', gap:10, flexDirection: m.role==='user'?'row-reverse':'row' }}>
               {m.role === 'ai' && (
-                <div style={{ width:34, height:34, borderRadius:'50%', background:'linear-gradient(135deg,#7C3AED,#EC4899)', padding:2, flexShrink:0, boxShadow:'0 2px 8px rgba(124,58,237,0.3)' }}>
-                  <div style={{ width:'100%', height:'100%', borderRadius:'50%', overflow:'hidden', background:'#1a0a3d', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <div style={{ width:34, height:34, borderRadius:'50%', background:'var(--grad-primary)', padding:2, flexShrink:0, boxShadow:'0 2px 8px var(--shadow-purple)' }}>
+                  <div style={{ width:'100%', height:'100%', borderRadius:'50%', overflow:'hidden', background:'var(--card)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                     <img src="/logo.png" alt="SF" style={{ width:24, height:24, objectFit:'contain' }} />
                   </div>
                 </div>
               )}
               {m.role === 'user' && (
-                <div style={{ width:30, height:30, borderRadius:'50%', background:'var(--grad-rose)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, color:'#fff', flexShrink:0 }}>
+                <div style={{ width:30, height:30, borderRadius:'50%', background:'var(--blue)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, color:'#fff', flexShrink:0 }}>
                   {profile?.name?.[0]?.toUpperCase() || 'U'}
                 </div>
               )}
-              <div className={m.role==='user'?'bubble-user':'bubble-ai'} style={{ animation:'fadeSlideUp 0.3s ease both' }}>{m.text}</div>
+              {!(m.role === 'ai' && voiceOnlyMode) && (
+                <div className={m.role==='user'?'bubble-user':'bubble-ai'} style={{ animation:'fadeSlideUp 0.3s ease both' }}>{m.text}</div>
+              )}
+              {(m.role === 'ai' && voiceOnlyMode) && (
+                <div style={{ padding:'12px 18px', background:'var(--surface)', borderRadius:20, color:'var(--text-sec)', display:'flex', alignItems:'center', gap:8, fontStyle:'italic', fontSize:13 }}>
+                  🔊 <span>Listening to AI...</span>
+                </div>
+              )}
             </div>
             {/* ── Generated Image Bubble ── */}
             {m.imageUrl && (
@@ -406,8 +495,8 @@ export default function ConversationPage() {
 
         {isTyping && (
           <div style={{ display:'flex', alignItems:'flex-end', gap:10 }}>
-            <div style={{ width:34, height:34, borderRadius:'50%', background:'linear-gradient(135deg,#7C3AED,#EC4899)', padding:2, flexShrink:0 }}>
-              <div style={{ width:'100%', height:'100%', borderRadius:'50%', overflow:'hidden', background:'#1a0a3d', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <div style={{ width:34, height:34, borderRadius:'50%', background:'var(--grad-primary)', padding:2, flexShrink:0 }}>
+              <div style={{ width:'100%', height:'100%', borderRadius:'50%', overflow:'hidden', background:'var(--card)', display:'flex', alignItems:'center', justifyContent:'center' }}>
                 <img src="/logo.png" alt="SF" style={{ width:24, height:24, objectFit:'contain' }} />
               </div>
             </div>
@@ -434,7 +523,7 @@ export default function ConversationPage() {
         {/* Centered mic button */}
         <div style={{ display:'flex', justifyContent:'center', marginBottom:10 }}>
           <button onClick={toggleMic}
-            style={{ width:60, height:60, borderRadius:'50%', border:'none', cursor:'pointer', background: isListening ? 'linear-gradient(135deg,#EF4444,#F59E0B)' : 'var(--grad-primary)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', boxShadow: isListening ? '0 8px 24px rgba(239,68,68,0.4)' : '0 8px 24px var(--shadow-purple)', position:'relative', transition:'all 0.25s', transform: isListening ? 'scale(1.1)' : 'scale(1)' }}>
+            style={{ width:60, height:60, borderRadius:'50%', border:'none', cursor:'pointer', background: isListening ? 'var(--error)' : 'var(--grad-primary)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', boxShadow: isListening ? '0 8px 24px rgba(220,38,38,0.4)' : '0 8px 24px var(--shadow-purple)', position:'relative', transition:'all 0.25s', transform: isListening ? 'scale(1.1)' : 'scale(1)' }}>
             {isListening && <><div className="ripple-ring" /><div className="ripple-ring" style={{ animationDelay:'0.4s' }} /></>}
             <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24" style={{ position:'relative', zIndex:1 }}>
               {isListening ? <path d="M6 6h12v12H6z"/> : <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1 1.93c-3.94-.49-7-3.85-7-7.93h2c0 3.31 2.69 6 6 6s6-2.69 6-6h2c0 4.08-3.06 7.44-7 7.93V22h-2v-4.07z"/>}
