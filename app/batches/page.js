@@ -94,7 +94,7 @@ export default function BatchesPage() {
 
   return (
     <>
-      <div style={{ paddingBottom:'calc(var(--nav-h) + 16px)', overflowY:'auto', height:'100vh' }}>
+      <div style={{ paddingBottom:'calc(var(--nav-h) + 16px)', overflowY:'auto', height:'100dvh' }}>
         {/* Header */}
         <div className="hero-header fade-up">
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>

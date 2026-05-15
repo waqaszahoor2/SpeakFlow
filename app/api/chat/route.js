@@ -110,24 +110,6 @@ Example: [ASSESSMENT] Can you tell me about a time you felt proud of yourself?
 Remember: You adapt. The student's level may grow — if they consistently answer correctly, gradually upgrade the conversation complexity.`;
 }
 
-/* ──────────────────────────────────────────────
-   KIMI (OpenAI-compatible) CALL
-────────────────────────────────────────────── */
-async function callKimi(model, messages) {
-  // Use securely configured environment variables
-  const key = process.env.KIMI_API_KEY;
-  if (!key) throw new Error('Kimi API key not configured on server.');
-  const res = await fetch('https://api.moonshot.cn/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-    body: JSON.stringify({ model, messages, temperature: 0.85, max_tokens: 600 }),
-  });
-  if (!res.ok) {
-    if (res.status === 401) throw new Error('Kimi API key is invalid, revoked, or expired. Please generate a new key.');
-    throw new Error(`Kimi API error ${res.status}: ${await res.text()}`);
-  }
-  return (await res.json()).choices?.[0]?.message?.content ?? '';
-}
 
 /* ──────────────────────────────────────────────
    MAIN HANDLER
@@ -146,7 +128,6 @@ export async function POST(req) {
     } = await req.json();
 
     const systemPrompt = buildSystemPrompt({ level, goals, mistakeContext, nativeLanguage });
-    const isKimi = model.startsWith('moonshot');
 
     /* ── Parse the raw AI response ── */
     function parseResponse(raw) {
@@ -166,16 +147,6 @@ export async function POST(req) {
         .replace(/\[IMAGE:[\s\S]*?\]/g, '')
         .trim();
       return { text, correction, isAssessment, imagePrompt };
-    }
-
-    /* ── KIMI BRANCH ── */
-    if (isKimi) {
-      const msgs = [
-        { role: 'system', content: systemPrompt },
-        ...(history || []).map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text })),
-        { role: 'user', content: message },
-      ];
-      return Response.json(parseResponse(await callKimi(model, msgs)));
     }
 
     /* ── GEMINI BRANCH ── */

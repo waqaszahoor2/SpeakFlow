@@ -35,7 +35,7 @@ export default function TopicsPage() {
 
   return (
     <>
-      <div style={{ paddingBottom:'calc(var(--nav-h) + 16px)', overflowY:'auto', height:'100vh' }}>
+      <div style={{ paddingBottom:'calc(var(--nav-h) + 16px)', overflowY:'auto', height:'100dvh' }}>
         {/* Header */}
         <div className="hero-header fade-up">
           <div style={{ fontSize:26, fontWeight:800, color:'#fff', marginBottom:4 }}>Practice Topics</div>

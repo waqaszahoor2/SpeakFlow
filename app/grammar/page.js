@@ -24,7 +24,7 @@ export default function GrammarPage() {
   const PATTERN_COLORS = ['#EF4444','#F59E0B','#8B5CF6','#3B82F6','#10B981'];
 
   return (
-    <div style={{ background:'var(--bg)', minHeight:'100vh', display:'flex', flexDirection:'column' }}>
+    <div style={{ background:'var(--bg)', minHeight:'100dvh', display:'flex', flexDirection:'column' }}>
       {/* AppBar */}
       <div style={{ background:'var(--card)', borderBottom:'1px solid var(--surface)', padding:'12px 16px', display:'flex', alignItems:'center', gap:12, flexShrink:0, boxShadow:'0 2px 12px var(--shadow)', paddingTop:'max(12px, env(safe-area-inset-top))' }}>
         <button onClick={() => router.back()} style={{ width:38, height:38, borderRadius:'50%', background:'var(--surface)', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>

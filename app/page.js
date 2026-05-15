@@ -15,7 +15,7 @@ export default function RootPage() {
     router.replace('/onboarding');
   }, []);
   return (
-    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100vh', background:'#0f0e1a' }}>
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100dvh', background:'#0f0e1a' }}>
       <div style={{ fontSize:48, animation:'pulse 1.5s ease infinite' }}>🤖</div>
     </div>
   );

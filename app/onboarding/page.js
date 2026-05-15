@@ -82,7 +82,7 @@ export default function OnboardingPage() {
   const s = STEPS[step];
 
   return (
-    <div style={{ minHeight:'100vh', background:'linear-gradient(160deg,#1a0a3d 0%,#0f0e1a 60%,#0a1a2e 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px 20px', fontFamily:'Poppins,sans-serif' }}>
+    <div style={{ minHeight:'100dvh', background:'linear-gradient(160deg,#1a0a3d 0%,#0f0e1a 60%,#0a1a2e 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px 20px', fontFamily:'Poppins,sans-serif' }}>
       {/* Progress bar */}
       {step > 0 && step < STEPS.length - 1 && (
         <div style={{ position:'fixed', top:0, left:0, right:0, height:4, background:'rgba(255,255,255,0.1)', zIndex:100 }}>

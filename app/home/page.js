@@ -56,7 +56,7 @@ export default function HomePage() {
 
   return (
     <>
-      <div style={{ paddingBottom:'var(--nav-h)', overflowY:'auto', height:'100vh' }}>
+      <div style={{ paddingBottom:'var(--nav-h)', overflowY:'auto', height:'100dvh' }}>
         {/* Header */}
         <div className="hero-header fade-up">
           <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:20 }}>

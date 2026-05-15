@@ -80,7 +80,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <div style={{ paddingBottom:'calc(var(--nav-h) + 16px)', overflowY:'auto', height:'100vh' }}>
+      <div style={{ paddingBottom:'calc(var(--nav-h) + 16px)', overflowY:'auto', height:'100dvh' }}>
 
         {/* ── Header ── */}
         <div className="hero-header fade-up" style={{ paddingBottom:32, textAlign:'center' }}>

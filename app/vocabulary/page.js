@@ -53,7 +53,7 @@ export default function VocabularyPage() {
   if (quizMode) {
     const quizWords = filtered;
     if (quizWords.length === 0) return (
-      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100vh', gap:16 }}>
+      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', height:'100dvh', gap:16 }}>
         <span style={{ fontSize:48 }}>📚</span>
         <span style={{ fontWeight:700, fontSize:16, color:'var(--text)' }}>No words to quiz!</span>
         <button className="btn-primary" onClick={() => setQuizMode(false)}>Back</button>
@@ -61,7 +61,7 @@ export default function VocabularyPage() {
     );
     const word = quizWords[quizIdx % quizWords.length];
     return (
-      <div style={{ display:'flex', flexDirection:'column', height:'100vh', background:'var(--bg)' }}>
+      <div style={{ display:'flex', flexDirection:'column', height:'100dvh', background:'var(--bg)' }}>
         <div style={{ background:'var(--card)', borderBottom:'1px solid var(--surface)', padding:'12px 16px', display:'flex', alignItems:'center', gap:12, flexShrink:0, boxShadow:'0 2px 12px var(--shadow)' }}>
           <button onClick={() => setQuizMode(false)} style={{ width:38, height:38, borderRadius:'50%', background:'var(--surface)', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
             <svg width="16" height="16" fill="none" stroke="var(--text)" strokeWidth="2.5" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
@@ -100,7 +100,7 @@ export default function VocabularyPage() {
 
   return (
     <>
-      <div style={{ paddingBottom:'calc(var(--nav-h) + 16px)', overflowY:'auto', height:'100vh' }}>
+      <div style={{ paddingBottom:'calc(var(--nav-h) + 16px)', overflowY:'auto', height:'100dvh' }}>
         {/* Header */}
         <div className="hero-header fade-up">
           <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:14 }}>
