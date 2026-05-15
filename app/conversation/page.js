@@ -299,7 +299,7 @@ export default function ConversationPage() {
             <div style={{ fontWeight:700, fontSize:14, color:'var(--text)' }}>AI English Tutor</div>
             <div style={{ display:'flex', alignItems:'center', gap:5 }}>
               <div style={{ width:6, height:6, borderRadius:'50%', background:'var(--success)', flexShrink:0 }} />
-              <span style={{ fontSize:11, color:'var(--success)', fontWeight:600 }}>{activeModel.emoji} {activeModel.label}</span>
+              <span style={{ fontSize:11, color:'var(--success)', fontWeight:600 }}>✨ Online</span>
             </div>
           </div>
           {corrections.length > 0 && (
@@ -320,16 +320,7 @@ export default function ConversationPage() {
         {showSettings && (
           <div style={{ borderTop:'1px solid var(--surface)', padding:'14px 16px', background:'var(--bg)' }} className="fade-up">
             <div style={{ fontSize:11, fontWeight:700, color:'var(--text-sec)', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:10 }}>Session Settings</div>
-            {/* Model picker */}
-            <div style={{ display:'flex', gap:6, overflowX:'auto', paddingBottom:4, marginBottom:12 }}>
-              {MODELS.map(m => (
-                <button key={m.id} onClick={() => { setLocalModel(m.id); saveSettings(); }}
-                  style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:2, padding:'8px 10px', borderRadius:12, border:`2px solid ${localModel===m.id?'var(--purple)':'var(--surface)'}`, background: localModel===m.id?'rgba(124,58,237,0.1)':'var(--card)', cursor:'pointer', fontFamily:'Poppins,sans-serif', flexShrink:0 }}>
-                  <span style={{ fontSize:15 }}>{m.emoji}</span>
-                  <span style={{ fontSize:10, fontWeight:700, color:localModel===m.id?'var(--purple)':'var(--text-sec)', whiteSpace:'nowrap' }}>{m.label}</span>
-                </button>
-              ))}
-            </div>
+
             {patterns.length > 0 && (
               <div style={{ background:'rgba(239,68,68,0.05)', border:'1px solid rgba(239,68,68,0.15)', borderRadius:12, padding:'10px 12px' }}>
                 <div style={{ fontSize:10, fontWeight:700, color:'#DC2626', marginBottom:6 }}>🎯 Your recurring mistakes (AI is watching these):</div>

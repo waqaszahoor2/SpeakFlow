@@ -119,7 +119,7 @@ export async function POST(req) {
     const {
       message,
       history,
-      model = 'moonshot-v1-8k',
+      model = 'gemini-1.5-flash',
       // Adaptive context from client
       level = 'Beginner',
       goals = [],
@@ -160,8 +160,9 @@ export async function POST(req) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
+    const actualModel = model.startsWith('gemini') ? model : 'gemini-1.5-flash';
     const geminiModel = genAI.getGenerativeModel({
-      model,
+      model: actualModel,
       systemInstruction: systemPrompt,
       generationConfig: { temperature: 0.85, maxOutputTokens: 600 },
     });
@@ -183,8 +184,8 @@ export async function POST(req) {
 
   } catch (err) {
     const msg = err.message || '';
-    if (msg.includes('API_KEY_INVALID') || msg.includes('401') || msg.includes('404')) {
-      return Response.json({ text: "⚠️ The Gemini API key is invalid, expired, or doesn't have access to this model. Please generate a new key at aistudio.google.com and update it in the settings panel (⚙️).", correction: null }, { status: 401 });
+    if (msg.includes('API_KEY_INVALID') || msg.includes('401') || msg.includes('404') || msg.includes('not found')) {
+      return Response.json({ text: "⚠️ The AI service is currently unavailable. Please check the API configuration in the Vercel environment variables.", correction: null }, { status: 401 });
     }
     if (msg.includes('quota') || msg.includes('429')) {
       return Response.json({ text: "⚠️ API quota exceeded. Please check your API provider billing or try again later.", correction: null }, { status: 429 });
