@@ -33,7 +33,7 @@ export default function ProgressPage() {
         {/* Header */}
         <div className="hero-header fade-up">
           <div style={{ fontSize:26, fontWeight:800, color:'#fff', marginBottom:4 }}>Your Progress</div>
-          <div style={{ fontSize:14, color:'rgba(255,255,255,0.8)' }}>Keep going — you're on fire! 🔥</div>
+          <div style={{ fontSize:14, color:'rgba(255,255,255,0.8)' }}>Keep going — you&apos;re on fire! 🔥</div>
         </div>
 
         <div className="page-content">

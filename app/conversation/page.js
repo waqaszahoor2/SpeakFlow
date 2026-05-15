@@ -153,6 +153,7 @@ export default function ConversationPage() {
     }
 
     const raw = localStorage.getItem('sf_profile');
+    let p = null;
     if (raw) {
       try { 
         p = JSON.parse(raw); 
@@ -379,27 +380,38 @@ export default function ConversationPage() {
 
             {/* Voice Picker */}
             {availableVoices.length > 0 && (
-              <div style={{ marginBottom: 12 }}>
-                <div style={{ fontSize:11, fontWeight:600, color:'var(--text-hint)', marginBottom:8 }}>🗣️ Voice Assistant</div>
-                <select 
-                  value={selectedVoiceURI} 
-                  onChange={(e) => { 
-                    const v = e.target.value;
-                    setSelectedVoiceURI(v); 
-                    voiceURIRef.current = v;
-                    if (profileRef.current) {
-                      const updated = { ...profileRef.current, selectedVoiceURI: v };
-                      localStorage.setItem('sf_profile', JSON.stringify(updated));
-                      setProfile(updated); profileRef.current = updated;
-                    }
-                  }}
-                  style={{ width:'100%', padding:'8px 12px', borderRadius:12, border:'1px solid var(--surface)', background:'var(--card)', color:'var(--text)', outline:'none', fontFamily:'Inter,sans-serif', fontSize:13 }}
-                >
-                  <option value="">Default OS Voice</option>
-                  {availableVoices.map(v => (
-                    <option key={v.voiceURI} value={v.voiceURI}>{v.name}</option>
-                  ))}
-                </select>
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize:11, fontWeight:600, color:'var(--text-hint)', marginBottom:8, display:'flex', justifyContent:'space-between' }}>
+                  <span>🗣️ Voice Assistant</span>
+                  <span style={{ fontSize:10, color:'var(--success)' }}>Free System Voices</span>
+                </div>
+                <div style={{ display:'flex', gap:8 }}>
+                  <select 
+                    value={selectedVoiceURI} 
+                    onChange={(e) => { 
+                      const v = e.target.value;
+                      setSelectedVoiceURI(v); 
+                      voiceURIRef.current = v;
+                      if (profileRef.current) {
+                        const updated = { ...profileRef.current, selectedVoiceURI: v };
+                        localStorage.setItem('sf_profile', JSON.stringify(updated));
+                        setProfile(updated); profileRef.current = updated;
+                      }
+                    }}
+                    style={{ flex:1, padding:'10px 12px', borderRadius:14, border:'1px solid var(--surface)', background:'var(--card)', color:'var(--text)', outline:'none', fontFamily:'Inter,sans-serif', fontSize:13 }}
+                  >
+                    <option value="">Default OS Voice</option>
+                    {availableVoices.map(v => (
+                      <option key={v.voiceURI} value={v.voiceURI}>{v.name.replace('Microsoft', '').replace('Google', '').trim()}</option>
+                    ))}
+                  </select>
+                  <button 
+                    onClick={() => speakText("Hello! This is how I will sound during our practice.")}
+                    style={{ width:40, height:40, borderRadius:14, background:'var(--grad-primary)', border:'none', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, boxShadow:'0 4px 12px var(--shadow-purple)' }}
+                  >
+                    <span style={{ fontSize:16 }}>▶️</span>
+                  </button>
+                </div>
               </div>
             )}
 
@@ -486,7 +498,7 @@ export default function ConversationPage() {
                 <span style={{ fontSize:13 }}>✏️</span>
                 <div>
                   <div style={{ fontSize:11, fontWeight:700, color:'#DC2626' }}>Grammar correction · Tap to see details</div>
-                  <div style={{ fontSize:10, color:'#EF4444' }}>"{m.correction.original?.slice(0,40)}..."</div>
+                  <div style={{ fontSize:10, color:'#EF4444' }}>&quot;{m.correction.original?.slice(0,40)}...&quot;</div>
                 </div>
               </div>
             )}

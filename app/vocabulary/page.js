@@ -80,7 +80,7 @@ export default function VocabularyPage() {
           {quizRevealed ? (
             <div style={{ width:'100%', maxWidth:420, background:'var(--card)', borderRadius:24, padding:24, boxShadow:'0 8px 24px var(--shadow)' }} className="fade-up">
               <div style={{ fontSize:14, color:'var(--text)', lineHeight:1.6, marginBottom:12, fontWeight:500 }}>{word.meaning}</div>
-              <div style={{ fontSize:13, color:'var(--text-sec)', fontStyle:'italic', borderLeft:'3px solid var(--purple)', paddingLeft:12 }}>"{word.example}"</div>
+              <div style={{ fontSize:13, color:'var(--text-sec)', fontStyle:'italic', borderLeft:'3px solid var(--purple)', paddingLeft:12 }}>&quot;{word.example}&quot;</div>
               <div style={{ display:'flex', gap:12, marginTop:20 }}>
                 <button className="btn-outline" style={{ flex:1 }} onClick={() => { setQuizIdx(i => i + 1); setQuizRevealed(false); }}>Next →</button>
                 <button className="btn-primary" style={{ flex:1 }} onClick={() => { toggleSave(word.id); setQuizIdx(i => i + 1); setQuizRevealed(false); }}>
@@ -163,7 +163,7 @@ export default function VocabularyPage() {
                   {flipped[w.id] ? (
                     <div className="fade-up">
                       <div style={{ fontSize:13, color:'var(--text)', lineHeight:1.6, marginBottom:8 }}>{w.meaning}</div>
-                      <div style={{ fontSize:12, color:'var(--text-sec)', fontStyle:'italic', borderLeft:'3px solid var(--purple)', paddingLeft:10 }}>"{w.example}"</div>
+                      <div style={{ fontSize:12, color:'var(--text-sec)', fontStyle:'italic', borderLeft:'3px solid var(--purple)', paddingLeft:10 }}>&quot;{w.example}&quot;</div>
                     </div>
                   ) : (
                     <div style={{ fontSize:12, color:'var(--text-hint)' }}>Tap to reveal meaning →</div>

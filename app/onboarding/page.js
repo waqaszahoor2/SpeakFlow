@@ -65,7 +65,7 @@ export default function OnboardingPage() {
       studyGoals: form.studyGoals,
       studyGoal: form.studyGoals[0] || '',
       geminiKey: '',
-      selectedModel: 'moonshot-v1-8k',
+      selectedModel: 'gemini-2.5-flash',
       checkedDays: [],
       todayMin: 0,
       xp: 0,
@@ -82,7 +82,7 @@ export default function OnboardingPage() {
   const s = STEPS[step];
 
   return (
-    <div style={{ minHeight:'100dvh', background:'linear-gradient(160deg,#1a0a3d 0%,#0f0e1a 60%,#0a1a2e 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px 20px', fontFamily:'Poppins,sans-serif' }}>
+    <div style={{ minHeight:'100dvh', background:'linear-gradient(160deg,#1a0a3d 0%,#0f0e1a 60%,#0a1a2e 100%)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'24px 20px', fontFamily:'Inter,sans-serif' }}>
       {/* Progress bar */}
       {step > 0 && step < STEPS.length - 1 && (
         <div style={{ position:'fixed', top:0, left:0, right:0, height:4, background:'rgba(255,255,255,0.1)', zIndex:100 }}>
@@ -142,7 +142,7 @@ export default function OnboardingPage() {
               onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setError(''); }}
               onKeyDown={e => e.key === 'Enter' && validateAndAdvance()}
               placeholder="Enter your name..."
-              style={{ width:'100%', padding:'18px 20px', borderRadius:18, border:`2px solid ${error ? '#EF4444' : 'rgba(124,58,237,0.4)'}`, background:'rgba(255,255,255,0.07)', color:'#fff', fontSize:18, fontWeight:600, fontFamily:'Poppins,sans-serif', outline:'none', marginBottom:error?8:24 }}
+              style={{ width:'100%', padding:'18px 20px', borderRadius:18, border:`2px solid ${error ? '#EF4444' : 'rgba(124,58,237,0.4)'}`, background:'rgba(255,255,255,0.07)', color:'#fff', fontSize:18, fontWeight:600, fontFamily:'Inter,sans-serif', outline:'none', marginBottom:error?8:24 }}
             />
             {error && <div style={{ color:'#EF4444', fontSize:13, marginBottom:16, textAlign:'center' }}>{error}</div>}
             <button onClick={validateAndAdvance} style={{ width:'100%', padding:'16px', borderRadius:18, border:'none', background:'linear-gradient(135deg,#7C3AED,#8B5CF6)', color:'#fff', fontSize:15, fontWeight:700, cursor:'pointer', boxShadow:'0 8px 24px rgba(124,58,237,0.4)' }}>
@@ -166,7 +166,7 @@ export default function OnboardingPage() {
                 onChange={e => { setForm(f => ({ ...f, age: e.target.value })); setError(''); }}
                 placeholder="e.g. 22"
                 min="8" max="80"
-                style={{ width:'100%', padding:'14px 18px', borderRadius:14, border:'2px solid rgba(124,58,237,0.3)', background:'rgba(255,255,255,0.07)', color:'#fff', fontSize:16, fontFamily:'Poppins,sans-serif', outline:'none' }}
+                style={{ width:'100%', padding:'14px 18px', borderRadius:14, border:'2px solid rgba(124,58,237,0.3)', background:'rgba(255,255,255,0.07)', color:'#fff', fontSize:16, fontFamily:'Inter,sans-serif', outline:'none' }}
               />
             </div>
 
@@ -175,7 +175,7 @@ export default function OnboardingPage() {
               <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
                 {LANGUAGES.map(l => (
                   <button key={l} onClick={() => { setForm(f => ({ ...f, nativeLanguage: l })); setError(''); }}
-                    style={{ padding:'8px 16px', borderRadius:20, border:`2px solid ${form.nativeLanguage===l?'#7C3AED':'rgba(255,255,255,0.15)'}`, background: form.nativeLanguage===l ? 'rgba(124,58,237,0.3)' : 'rgba(255,255,255,0.06)', color: form.nativeLanguage===l?'#C4B5FD':'rgba(255,255,255,0.7)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'Poppins,sans-serif', transition:'all 0.2s' }}>
+                    style={{ padding:'8px 16px', borderRadius:20, border:`2px solid ${form.nativeLanguage===l?'#7C3AED':'rgba(255,255,255,0.15)'}`, background: form.nativeLanguage===l ? 'rgba(124,58,237,0.3)' : 'rgba(255,255,255,0.06)', color: form.nativeLanguage===l?'#C4B5FD':'rgba(255,255,255,0.7)', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'Inter,sans-serif', transition:'all 0.2s' }}>
                     {l}
                   </button>
                 ))}
@@ -202,7 +202,7 @@ export default function OnboardingPage() {
                 const sel = form.englishLevel === l;
                 return (
                   <button key={l} onClick={() => setForm(f => ({ ...f, englishLevel: l }))}
-                    style={{ display:'flex', alignItems:'center', gap:16, padding:'16px 18px', borderRadius:18, border:`2px solid ${sel?'#7C3AED':'rgba(255,255,255,0.1)'}`, background: sel?'rgba(124,58,237,0.25)':'rgba(255,255,255,0.04)', cursor:'pointer', textAlign:'left', fontFamily:'Poppins,sans-serif', transition:'all 0.2s' }}>
+                    style={{ display:'flex', alignItems:'center', gap:16, padding:'16px 18px', borderRadius:18, border:`2px solid ${sel?'#7C3AED':'rgba(255,255,255,0.1)'}`, background: sel?'rgba(124,58,237,0.25)':'rgba(255,255,255,0.04)', cursor:'pointer', textAlign:'left', fontFamily:'Inter,sans-serif', transition:'all 0.2s' }}>
                     <span style={{ fontSize:26 }}>{emojis[i]}</span>
                     <div>
                       <div style={{ fontSize:14, fontWeight:700, color:'#fff' }}>{l}</div>
@@ -238,7 +238,7 @@ export default function OnboardingPage() {
                         : [...f.studyGoals, g.label],
                     }));
                   }}
-                    style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, padding:'16px 10px', borderRadius:18, border:`2px solid ${sel?'#7C3AED':'rgba(255,255,255,0.1)'}`, background: sel?'rgba(124,58,237,0.25)':'rgba(255,255,255,0.04)', cursor:'pointer', fontFamily:'Poppins,sans-serif', transition:'all 0.2s', position:'relative' }}>
+                    style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, padding:'16px 10px', borderRadius:18, border:`2px solid ${sel?'#7C3AED':'rgba(255,255,255,0.1)'}`, background: sel?'rgba(124,58,237,0.25)':'rgba(255,255,255,0.04)', cursor:'pointer', fontFamily:'Inter,sans-serif', transition:'all 0.2s', position:'relative' }}>
                     {sel && <div style={{ position:'absolute', top:8, right:8, width:18, height:18, borderRadius:'50%', background:'#7C3AED', display:'flex', alignItems:'center', justifyContent:'center' }}><svg width="10" height="10" fill="#fff" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>}
                     <span style={{ fontSize:28 }}>{g.emoji}</span>
                     <span style={{ fontSize:11, fontWeight:700, color: sel?'#C4B5FD':'rgba(255,255,255,0.75)', textAlign:'center', lineHeight:1.3 }}>{g.label}</span>

@@ -8,16 +8,12 @@ const LANGUAGES = ['Urdu', 'Hindi', 'Arabic', 'Chinese', 'Spanish', 'French', 'P
 const GOALS = ['Get a job abroad','Pass IELTS/TOEFL','Travel confidently','Daily conversation','Business English','Improve overall'];
 
 const MODELS = [
-  { id:'moonshot-v1-8k',   label:'Kimi 8K',   sub:'Fast · Moonshot AI',              emoji:'🌙', provider:'kimi' },
-  { id:'moonshot-v1-32k',  label:'Kimi 32K',  sub:'Long context · Moonshot AI',      emoji:'🌙', provider:'kimi' },
-  { id:'moonshot-v1-128k', label:'Kimi 128K', sub:'Max context · Moonshot AI',       emoji:'🌙', provider:'kimi' },
-  { id:'gemini-1.5-flash', label:'Gemini Flash', sub:'Fast · Google',                emoji:'✨', provider:'gemini' },
-  { id:'gemini-1.5-pro',   label:'Gemini Pro',   sub:'Powerful · Google (needs key)', emoji:'✨', provider:'gemini' },
+  { id:'gemini-2.5-flash', label:'Gemini Flash', sub:'Powered by Google AI', emoji:'✨' },
 ];
 
 const DEFAULT = {
   name:'', age:'', nativeLanguage:'', englishLevel:'Beginner', studyGoal:'', studyGoals:[],
-  geminiKey:'', selectedModel:'moonshot-v1-8k', xp:0, streak:0, setupDone:true,
+  selectedModel:'gemini-2.5-flash', xp:0, streak:0, setupDone:true,
   checkedDays:[], todayMin:0, dailyGoalMin:null,
 };
 
@@ -215,89 +211,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* ── AI Model Selection ── */}
-          <div style={{ fontWeight:700, fontSize:16, color:'var(--text)' }}>🤖 AI Model</div>
-          <div className="card fade-up" style={{ padding:16 }}>
-            {/* Current selection preview */}
-            <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14, padding:'12px 14px', background:'var(--surface)', borderRadius:14 }}>
-              <span style={{ fontSize:24 }}>{selectedModelObj.emoji}</span>
-              <div style={{ flex:1 }}>
-                <div style={{ fontWeight:700, fontSize:14, color:'var(--text)' }}>{selectedModelObj.label}</div>
-                <div style={{ fontSize:12, color:'var(--text-sec)' }}>{selectedModelObj.sub}</div>
-              </div>
-              <div style={{ background:'var(--grad-primary)', borderRadius:8, padding:'3px 10px', fontSize:10, fontWeight:700, color:'#fff' }}>Active</div>
-            </div>
-            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-              {MODELS.map(m => {
-                const sel = profile.selectedModel === m.id;
-                return (
-                  <button key={m.id} onClick={() => saveProfile({ selectedModel: m.id })}
-                    style={{ display:'flex', alignItems:'center', gap:12, padding:'12px 14px', borderRadius:14,
-                      border:`2px solid ${sel ? 'var(--purple)' : 'var(--surface)'}`,
-                      background: sel ? 'rgba(124,58,237,0.08)' : 'transparent',
-                      cursor:'pointer', fontFamily:'Poppins,sans-serif', transition:'all 0.2s', width:'100%', textAlign:'left' }}>
-                    <span style={{ fontSize:20 }}>{m.emoji}</span>
-                    <div style={{ flex:1 }}>
-                      <div style={{ fontSize:13, fontWeight:700, color:'var(--text)' }}>{m.label}</div>
-                      <div style={{ fontSize:11, color:'var(--text-sec)' }}>{m.sub}</div>
-                    </div>
-                    {sel && (
-                      <div style={{ width:20, height:20, borderRadius:'50%', background:'var(--purple)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>
-                        <svg width="11" height="11" fill="#fff" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
 
-          {/* ── Gemini API Key ── */}
-          <div style={{ fontWeight:700, fontSize:16, color:'var(--text)' }}>🔑 Gemini API Key</div>
-          <div className="settings-card fade-up">
-            <div className="settings-row" style={{ flexDirection:'column', alignItems:'flex-start', gap:10, borderBottom:'none' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:10, width:'100%' }}>
-                <span style={{ fontSize:20 }}>🔑</span>
-                <div style={{ flex:1 }}>
-                  <div style={{ fontWeight:700, fontSize:14, color:'var(--text)' }}>Google Gemini Key</div>
-                  <div style={{ fontSize:11, color: profile.geminiKey ? 'var(--success)' : 'var(--text-sec)' }}>
-                    {profile.geminiKey ? `✅ Key saved: ${maskedKey}` : 'Required only for Gemini models'}
-                  </div>
-                </div>
-                <button onClick={() => setShowKey(s => !s)}
-                  style={{ background: profile.geminiKey ? 'var(--surface)' : 'var(--grad-primary)', borderRadius:12, padding:'7px 14px', fontSize:12, fontWeight:700, color: profile.geminiKey ? 'var(--text-sec)' : '#fff', border:'none', cursor:'pointer', fontFamily:'Poppins,sans-serif', flexShrink:0 }}>
-                  {profile.geminiKey ? '✏️ Edit' : '+ Add'}
-                </button>
-              </div>
-              {showKey && (
-                <div style={{ width:'100%', display:'flex', flexDirection:'column', gap:10 }} className="fade-up">
-                  <input type="password" value={form.geminiKey || ''} onChange={e => setForm(f=>({...f,geminiKey:e.target.value}))} placeholder="AIza..."
-                    style={{ width:'100%', padding:'12px 16px', borderRadius:14, border:'1.5px solid rgba(124,58,237,0.25)', background:'var(--surface)', fontFamily:'Poppins,sans-serif', fontSize:13, color:'var(--text)', outline:'none' }} />
-                  <div style={{ fontSize:11, color:'var(--text-hint)', lineHeight:1.5 }}>
-                    💡 Get a free key at{' '}
-                    <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{ color:'var(--purple)', fontWeight:600 }}>aistudio.google.com/apikey</a>
-                  </div>
-                  <div style={{ display:'flex', gap:10 }}>
-                    {profile.geminiKey && (
-                      <button onClick={() => { saveProfile({ geminiKey:'' }); setForm(f=>({...f,geminiKey:''})); setShowKey(false); }}
-                        style={{ flex:1, padding:'10px', borderRadius:12, border:'1px solid rgba(239,68,68,0.3)', background:'rgba(239,68,68,0.08)', color:'var(--error)', fontFamily:'Poppins,sans-serif', fontSize:13, fontWeight:600, cursor:'pointer' }}>
-                        🗑️ Remove
-                      </button>
-                    )}
-                    <button className="btn-primary" style={{ flex:2, padding:'10px' }} onClick={saveGeminiKey}>💾 Save Key</button>
-                  </div>
-                </div>
-              )}
-              {keySaved && (
-                <div style={{ width:'100%', background:'#D1FAE5', borderRadius:12, padding:'10px 14px', fontSize:12, fontWeight:600, color:'#059669' }} className="fade-up">
-                  ✅ Key saved! You can now use Gemini models.
-                </div>
-              )}
-              <div style={{ width:'100%', padding:'10px 14px', background:'rgba(124,58,237,0.06)', borderRadius:12, fontSize:12, color:'var(--text-sec)', lineHeight:1.5 }}>
-                💡 <strong>Kimi models work without any key</strong> — they use the server's built-in key. Gemini requires your own.
-              </div>
-            </div>
-          </div>
 
           {/* ── App Settings ── */}
           <div style={{ fontWeight:700, fontSize:16, color:'var(--text)' }}>Settings</div>
