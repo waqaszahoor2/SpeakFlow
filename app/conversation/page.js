@@ -6,8 +6,8 @@ import { saveCorrection, buildMistakeContext, xpToLevel, nextLevelXp, loadPatter
 let msgId = 0;
 
 const MODELS = [
-  { id:'gemini-1.5-flash', label:'Gemini Flash', emoji:'✨' },
-  { id:'gemini-1.5-pro',   label:'Gemini Pro',   emoji:'✨' },
+  { id:'gemini-2.5-flash', label:'Gemini Flash', emoji:'✨' },
+  { id:'gemini-2.5-pro',   label:'Gemini Pro',   emoji:'✨' },
 ];
 
 const ART_STYLES = [
@@ -109,7 +109,7 @@ export default function ConversationPage() {
   const [corrections, setCorrections] = useState([]);
   const [profile, setProfile] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [localModel, setLocalModel] = useState('gemini-1.5-flash');
+  const [localModel, setLocalModel] = useState('gemini-2.5-flash');
   const [levelUp, setLevelUp] = useState(null);
   const [assessmentCount, setAssessmentCount] = useState(0);
   const [imageStyle, setImageStyle] = useState('realistic');
@@ -123,7 +123,7 @@ export default function ConversationPage() {
     const raw = localStorage.getItem('sf_profile');
     let p = null;
     if (raw) {
-      try { p = JSON.parse(raw); setProfile(p); profileRef.current = p; setLocalModel(MODELS.some(m => m.id === p.selectedModel) ? p.selectedModel : 'gemini-1.5-flash'); } catch {}
+      try { p = JSON.parse(raw); setProfile(p); profileRef.current = p; setLocalModel(MODELS.some(m => m.id === p.selectedModel) ? p.selectedModel : 'gemini-2.5-flash'); } catch {}
     }
     const intro = p?.englishLevel === 'Beginner'
       ? "Hello! I'm your SpeakFlow AI tutor. Let's start easy — please tell me your name and where you are from."
@@ -177,7 +177,7 @@ export default function ConversationPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: text, history,
-          model: localModel || p?.selectedModel || 'gemini-1.5-flash',
+          model: localModel || p?.selectedModel || 'gemini-2.5-flash',
           level: p?.englishLevel || 'Beginner',
           goals,
           nativeLanguage: p?.nativeLanguage || '',

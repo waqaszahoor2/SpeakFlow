@@ -119,7 +119,7 @@ export async function POST(req) {
     const {
       message,
       history,
-      model = 'gemini-1.5-flash',
+      model = 'gemini-2.5-flash',
       // Adaptive context from client
       level = 'Beginner',
       goals = [],
@@ -163,7 +163,7 @@ export async function POST(req) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const actualModel = model.startsWith('gemini') ? model : 'gemini-1.5-flash';
+    const actualModel = model.startsWith('gemini') && !model.includes('1.5') ? model : 'gemini-2.5-flash';
     const geminiModel = genAI.getGenerativeModel({
       model: actualModel,
       systemInstruction: systemPrompt,
