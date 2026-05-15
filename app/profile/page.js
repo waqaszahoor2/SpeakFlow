@@ -26,8 +26,21 @@ export default function ProfilePage() {
   const [showKey, setShowKey] = useState(false);
   const [keySaved, setKeySaved] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [availableVoices, setAvailableVoices] = useState([]);
 
   useEffect(() => {
+    const loadVoices = () => {
+      if (typeof window === 'undefined' || !window.speechSynthesis) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        setAvailableVoices(voices.filter(v => v.lang.startsWith('en')));
+      }
+    };
+    loadVoices();
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
     const raw = localStorage.getItem('sf_profile');
     if (raw) {
       const p = { ...DEFAULT, ...JSON.parse(raw) };
@@ -217,9 +230,11 @@ export default function ProfilePage() {
               <span style={{ fontWeight:600, fontSize:13, color:'var(--purple)' }}>English</span>
             </div>
             <div className="settings-row" style={{ borderBottom:'none' }}>
-              <span style={{ fontSize:20 }}>🔊</span>
-              <span style={{ flex:1, fontWeight:600, fontSize:14, color:'var(--text)' }}>Voice Speed</span>
-              <span style={{ fontWeight:600, fontSize:13, color:'var(--purple)' }}>Normal</span>
+              <span style={{ fontSize:20 }}>🗣️</span>
+              <span style={{ flex:1, fontWeight:600, fontSize:14, color:'var(--text)' }}>Voice Assistant</span>
+              <span style={{ fontWeight:600, fontSize:13, color:'var(--purple)', maxWidth:'140px', textAlign:'right', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+                {availableVoices.find(v => v.voiceURI === profile.selectedVoiceURI)?.name.replace('Microsoft', '').replace('Google', '').trim() || 'Default'}
+              </span>
             </div>
           </div>
 
