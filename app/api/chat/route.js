@@ -151,10 +151,13 @@ export async function POST(req) {
 
     /* ── GEMINI BRANCH ── */
     // Exclusively use the securely configured server env variable
-    const apiKey = process.env.GEMINI_API_KEY;
+    let apiKey = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.API_KEY || '').trim();
+    // Remove potential surrounding quotes from env variables
+    apiKey = apiKey.replace(/^["']|["']$/g, '');
+    
     if (!apiKey || apiKey === 'your_actual_api_key_here') {
       return Response.json({
-        text: "⚠️ SpeakFlow is experiencing configuration issues. Please contact the administrator.",
+        text: "⚠️ SpeakFlow is missing its API key configuration. Please ensure you have added GEMINI_API_KEY in your Vercel environment.",
         correction: null, isAssessment: false,
       });
     }
@@ -183,9 +186,10 @@ export async function POST(req) {
     return Response.json(parseResponse(result.response.text()));
 
   } catch (err) {
+    console.error('API Error Details:', err);
     const msg = err.message || '';
     if (msg.includes('API_KEY_INVALID') || msg.includes('401') || msg.includes('404') || msg.includes('not found')) {
-      return Response.json({ text: "⚠️ The AI service is currently unavailable. Please check the API configuration in the Vercel environment variables.", correction: null }, { status: 401 });
+      return Response.json({ text: `⚠️ AI Service Error: ${msg}. Please check that your GEMINI_API_KEY in Vercel is correct and active.`, correction: null }, { status: 401 });
     }
     if (msg.includes('quota') || msg.includes('429')) {
       return Response.json({ text: "⚠️ API quota exceeded. Please check your API provider billing or try again later.", correction: null }, { status: 429 });
