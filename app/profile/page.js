@@ -52,13 +52,7 @@ export default function ProfilePage() {
     setTimeout(() => setSaved(false), 2500);
   };
 
-  const saveGeminiKey = () => {
-    saveProfile({ geminiKey: form.geminiKey?.trim() || '' });
-    setProfileState(p => ({ ...p, geminiKey: form.geminiKey?.trim() || '' }));
-    setShowKey(false);
-    setKeySaved(true);
-    setTimeout(() => setKeySaved(false), 3000);
-  };
+
 
   const toggleDark = () => {
     setDarkMode(d => !d);
@@ -68,11 +62,7 @@ export default function ProfilePage() {
   const levels = LEVELS;
   const levelIdx = levels.indexOf(profile.englishLevel);
   const levelPct = Math.round(((Math.max(0,levelIdx) + 0.5) / levels.length) * 100);
-  const maskedKey = profile.geminiKey
-    ? `${profile.geminiKey.slice(0,6)}${'•'.repeat(Math.max(0, profile.geminiKey.length-10))}${profile.geminiKey.slice(-4)}`
-    : '';
 
-  const selectedModelObj = MODELS.find(m => m.id === profile.selectedModel) || MODELS[0];
 
   return (
     <>
