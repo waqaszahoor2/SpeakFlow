@@ -106,7 +106,7 @@ export default function ConversationPage() {
   const [corrections, setCorrections] = useState([]);
   const [profile, setProfile] = useState(null);
   const [showSettings, setShowSettings] = useState(false);
-  const [localModel, setLocalModel] = useState('gemini-2.5-flash');
+
   const [levelUp, setLevelUp] = useState(null);
   const [assessmentCount, setAssessmentCount] = useState(0);
   const [imageStyle, setImageStyle] = useState('realistic');
@@ -224,7 +224,7 @@ export default function ConversationPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: text, history,
-          model: localModel || p?.selectedModel || 'gemini-2.5-flash',
+        model: 'gemini-2.5-flash',
           level: p?.englishLevel || 'Beginner',
           goals,
           nativeLanguage: p?.nativeLanguage || '',
@@ -299,7 +299,7 @@ export default function ConversationPage() {
     if (raw) {
       try {
         const p2 = JSON.parse(raw);
-        const updated = { ...p2, selectedModel: localModel };
+        const updated = { ...p2 };
         localStorage.setItem('sf_profile', JSON.stringify(updated));
         setProfile(updated); profileRef.current = updated;
       } catch {}
@@ -307,7 +307,7 @@ export default function ConversationPage() {
     setShowSettings(false);
   }
 
-  const activeModel = MODELS.find(m => m.id === localModel) || MODELS[0];
+
   const currentLevel = profile?.englishLevel || 'Beginner';
   const levelColor = LEVEL_COLORS[currentLevel] || '#7C3AED';
   const patterns = loadPatterns ? loadPatterns() : [];
