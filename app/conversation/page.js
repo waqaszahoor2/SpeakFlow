@@ -111,6 +111,9 @@ export default function ConversationPage() {
   const [assessmentCount, setAssessmentCount] = useState(0);
   const [imageStyle, setImageStyle] = useState('realistic');
   const [voiceOnlyMode, setVoiceOnlyMode] = useState(false);
+  const [handsFree, setHandsFree] = useState(false);
+  const handsFreeRef = useRef(false);
+  const isSpeakingRef = useRef(false);
   const [availableVoices, setAvailableVoices] = useState([]);
   const [selectedVoiceURI, setSelectedVoiceURI] = useState('');
   const voiceURIRef = useRef('');
@@ -121,17 +124,58 @@ export default function ConversationPage() {
   const profileRef = useRef(null);
 
   useEffect(() => { voiceURIRef.current = selectedVoiceURI; }, [selectedVoiceURI]);
+  useEffect(() => { handsFreeRef.current = handsFree; }, [handsFree]);
 
   const speakText = (text) => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    
+    // Explicitly reset the speaking flag when canceling
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
+    isSpeakingRef.current = false;
+
+    // Remove SSML-like tags or markdown from the text for cleaner speech
+    const cleanText = text.replace(/📝\s*\*\*Quick correction:\*\*/gi, 'Quick correction.').replace(/[*#_]/g, '');
+
+    const u = new SpeechSynthesisUtterance(cleanText);
     u.lang = 'en-US';
     u.rate = 0.95;
+    u.pitch = 1.0;
+
+    u.onstart = () => { 
+      isSpeakingRef.current = true; 
+    };
+
+    const handleSpeechEnd = () => {
+      if (!isSpeakingRef.current) return; // Already handled
+      isSpeakingRef.current = false;
+      if (handsFreeRef.current && recognitionRef.current) {
+        // Delay slightly to avoid catching the last echo of the voice
+        setTimeout(() => {
+          if (handsFreeRef.current && !isSpeakingRef.current) {
+            try { recognitionRef.current.start(); setIsListening(true); } catch {}
+          }
+        }, 400);
+      }
+    };
+
+    u.onend = handleSpeechEnd;
+    u.onerror = handleSpeechEnd;
+
+    // Use a ref-safe voice lookup
+    const voices = window.speechSynthesis.getVoices();
     if (voiceURIRef.current) {
-      const voice = window.speechSynthesis.getVoices().find(v => v.voiceURI === voiceURIRef.current);
+      const voice = voices.find(v => v.voiceURI === voiceURIRef.current);
       if (voice) u.voice = voice;
+      else if (voices.length > 0) {
+        // Fallback to first English voice if saved one is gone
+        const enVoice = voices.find(v => v.lang.startsWith('en'));
+        if (enVoice) u.voice = enVoice;
+      }
+    } else {
+      const enVoice = voices.find(v => v.lang.startsWith('en-GB')) || voices.find(v => v.lang.startsWith('en'));
+      if (enVoice) u.voice = enVoice;
     }
+
     window.speechSynthesis.speak(u);
   };
 
@@ -178,9 +222,18 @@ export default function ConversationPage() {
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
       recognitionRef.current.lang = 'en-US';
-      recognitionRef.current.onresult = (e) => { setIsListening(false); sendMessage(e.results[0][0].transcript); };
+      recognitionRef.current.onresult = (e) => { 
+        setIsListening(false); 
+        sendMessage(e.results[0][0].transcript); 
+      };
       recognitionRef.current.onerror = () => setIsListening(false);
-      recognitionRef.current.onend = () => setIsListening(false);
+      recognitionRef.current.onend = () => {
+        if (!isSpeakingRef.current && handsFreeRef.current && !isListening) {
+          try { recognitionRef.current.start(); setIsListening(true); } catch {}
+        } else {
+          setIsListening(false);
+        }
+      };
     }
     return () => {
       const elapsed = Math.floor((Date.now() - (sessionStart.current || Date.now())) / 60000);
@@ -281,8 +334,16 @@ export default function ConversationPage() {
 
   function toggleMic() {
     if (!recognitionRef.current) { alert('Speech recognition not supported. Use Chrome.'); return; }
-    if (isListening) { recognitionRef.current.stop(); setIsListening(false); }
-    else { recognitionRef.current.start(); setIsListening(true); }
+    if (isListening) { 
+      recognitionRef.current.stop(); 
+      setIsListening(false); 
+      setHandsFree(false);
+    }
+    else { 
+      setHandsFree(true);
+      recognitionRef.current.start(); 
+      setIsListening(true); 
+    }
   }
 
   function resetChat() {
@@ -474,7 +535,19 @@ export default function ConversationPage() {
                 </div>
               )}
               {!(m.role === 'ai' && voiceOnlyMode) && (
-                <div className={m.role==='user'?'bubble-user':'bubble-ai'} style={{ animation:'fadeSlideUp 0.3s ease both' }}>{m.text}</div>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <div className={m.role==='user'?'bubble-user':'bubble-ai'} style={{ animation:'fadeSlideUp 0.3s ease both' }}>{m.text}</div>
+                  {m.role === 'ai' && (
+                    <button 
+                      onClick={() => speakText(m.text)}
+                      style={{ background:'var(--surface)', border:'none', borderRadius:10, width:32, height:32, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--purple)', flexShrink:0, transition:'transform 0.1s' }}
+                      onMouseDown={e => e.currentTarget.style.transform='scale(0.9)'}
+                      onMouseUp={e => e.currentTarget.style.transform='scale(1)'}
+                    >
+                      <span style={{ fontSize:16 }}>🔊</span>
+                    </button>
+                  )}
+                </div>
               )}
               {(m.role === 'ai' && voiceOnlyMode) && (
                 <div style={{ padding:'12px 18px', background:'var(--surface)', borderRadius:20, color:'var(--text-sec)', display:'flex', alignItems:'center', gap:8, fontStyle:'italic', fontSize:13 }}>
